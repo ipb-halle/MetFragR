@@ -1,0 +1,5 @@
+exportPattern("^[[:alpha:]]+")
+
+import("rJava")
+import("rcdk")
+export("score.molecules.from.sdf")
