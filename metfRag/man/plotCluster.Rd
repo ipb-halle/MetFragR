@@ -12,6 +12,9 @@
 
   \item{idprop}{The name of the property of the molecules
   where the database ID is kept}
+
+  \item{...}{the remaining parameters are passed down to
+  \code{dendromat()}}
 }
 \description{
   Cluster a set of compounds and plot the results
