@@ -11,7 +11,8 @@
   Calculate the Maximum Common Substructure
 }
 \examples{
-smiles <- c('CCC', 'CCN', 'CCN(C)(C)',
+library(rcdk)
+       smiles <- c('CCC', 'CCN', 'CCN(C)(C)',
                    'c1ccccc1Cc1ccccc1',
                    'C1CCC1CC(CN(C)(C))CC(=O)CC')
        mols <- parse.smiles(smiles)

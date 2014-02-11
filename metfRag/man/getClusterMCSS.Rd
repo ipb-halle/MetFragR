@@ -1,9 +1,8 @@
 \name{getClusterMCSS}
 \alias{getClusterMCSS}
-\alias{getMCSS}
 \title{Chemical Clustering}
 \usage{
-  getMCSS(mols)
+  getClusterMCSS(hcluster, mols, h = 0.2)
 }
 \arguments{
   \item{hcluster}{Previously created hclust for
@@ -11,17 +10,18 @@
 
   \item{mols}{The a list of rCDK \code{mols}}
 
-  \item{h}{dendrogram cutoff #'}
+  \item{h}{dendrogram cutoff}
 }
 \description{
   Calculate the Maximum Common Substructure
 }
 \examples{
-smiles <- c('CCC', 'CCN', 'CCN(C)(C)',
+library(rcdk)
+       smiles <- c('CCC', 'CCN', 'CCN(C)(C)',
                    'c1ccccc1Cc1ccccc1',
                    'C1CCC1CC(CN(C)(C))CC(=O)CC')
        mols <- parse.smiles(smiles)
-       cluster <- metfRag:::hclust.mols(mols)
-       clusterreps <- getMCSS(mols, cluster)
+       cluster <- hclust.mols(mols)
+       clusterreps <- getClusterMCSS(cluster, mols)
 }
 

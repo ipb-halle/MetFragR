@@ -2,16 +2,15 @@
 \alias{plotMetClust}
 \title{Chemical Clustering of MetFrag and MetFusion results SDF files}
 \usage{
-  plotMetClust(mols, sdf, hclust, scoreprop="Score",
-    idprop="DatabaseID")
+  plotMetClust(mols = NULL, filename = NULL,
+    type = c("auto", "sdf", "smi"), hclust = NULL,
+    scoreprop = "Score", idprop = "DatabaseID")
 }
 \arguments{
   \item{hclust}{An object of class hclust which describes
   the tree produced by a prior clustering process.}
 
   \item{mols}{The a list of rCDK \code{mols}.}
-
-  \item{smiles}{A character vector of SMILES codes.}
 
   \item{filename}{A filename to an SD File. If boths
   \code{mols} and \code{filename} are given, filename is
@@ -33,7 +32,8 @@
   MetFusion
 }
 \examples{
-smiles <- c('CCC', 'CCN', 'CCN(C)(C)',
+library(rcdk)
+       smiles <- c('CCC', 'CCN', 'CCN(C)(C)',
                    'c1ccccc1Cc1ccccc1',
                    'C1CCC1CC(CN(C)(C))CC(=O)CC')
        mols <- parse.smiles(smiles)

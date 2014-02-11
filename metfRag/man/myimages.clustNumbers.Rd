@@ -1,10 +1,9 @@
 \name{myimages.clustNumbers}
 \alias{myimages.clustNumbers}
-\alias{myimages.hclust}
 \title{Chemical Clustering}
 \usage{
-  myimages.hclust (tree, k = NULL, which = NULL, x = NULL,
-    h = NULL, images = NULL, cluster = NULL, mols=NULL)
+  myimages.clustNumbers(tree, k = NULL, which = NULL,
+    x = NULL, h = NULL, cluster = NULL, border = NULL)
 }
 \arguments{
   \item{tree}{an object of the type produced by
@@ -22,16 +21,12 @@
   horizontal coordinates. Default is \code{which = 1:k}
   (either x or which needs to be specified)}
 
-  \item{images}{}
-
   \item{cluster}{Optional vector with cluster memberships
   as returned by \code{cutree(hclust.obj, k = k)}, can be
   specified for efficiency if already computed.}
 
   \item{border}{Vector with border colors for the
-  rectangles, NULL for none.}
-
-  \item{mols}{The a list of rCDK \code{mols}}
+  rectangles, NULL for none. Recycled if neccessary.}
 }
 \description{
   Calculate the Maximum Common Substructure Modified from

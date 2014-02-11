@@ -15,4 +15,4 @@ LaTeX: pdfLaTeX
 BuildType: Package
 PackagePath: metfRag
 PackageInstallArgs: --no-multiarch
-PackageRoxygenize: rd
+PackageRoxygenize: rd,namespace

@@ -1,8 +1,15 @@
-export("score.molecules.from.sdf",
-       "plotCluster")
-
-
-import("rJava")
-import("rcdk")
-import("squash")
-export("score.molecules.from.sdf")
+export(getClusterMCSS)
+export(getDatabaseIDs)
+export(getMCSS)
+export(getPeaksExplained)
+export(getScores)
+export(hclust.mols)
+export(myimages.clustNumbers)
+export(myimages.hclust)
+export(plotCluster)
+export(plotMetClust)
+export(score.molecules.from.sdf)
+importFrom(tools,file_ext)
+import(rcdk)
+import(rJava)
+import(squash)

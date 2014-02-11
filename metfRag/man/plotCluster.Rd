@@ -2,7 +2,8 @@
 \alias{plotCluster}
 \title{Chemical Clustering}
 \usage{
-  plotCluster(mols, scoreprop="Score", idprop="DatabaseID")
+  plotCluster(mols, scoreprop = "Score",
+    idprop = "DatabaseID", ...)
 }
 \arguments{
   \item{mols}{The a list of rCDK \code{mols}}
@@ -20,7 +21,8 @@
   Cluster a set of compounds and plot the results
 }
 \examples{
-smiles <- c('CCC', 'CCN', 'CCN(C)(C)',
+library(rcdk)
+       smiles <- c('CCC', 'CCN', 'CCN(C)(C)',
                    'c1ccccc1Cc1ccccc1',
                    'C1CCC1CC(CN(C)(C))CC(=O)CC')
        mols <- parse.smiles(smiles)

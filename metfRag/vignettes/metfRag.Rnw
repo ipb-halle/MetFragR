@@ -33,7 +33,7 @@
 
 This document describes how to use \Rpackage{metfRag}.
 
-<<LibraryPreload, echo = FALSE, results = hide>>=
+<<LibraryPreloade>>=
 library(metfRag)
 library(rcdk)
 @
@@ -65,7 +65,7 @@ scoredMols <- score.molecules.from.sdf(sdfile, mzs=challenge5[,"mz"], ints=chall
 First, check the score distribution:
 
 <<plotScores, fig=TRUE, eps=FALSE>>=
-scores <- metfRag:::getScores(scoredMols)
+scores <- getScores(scoredMols)
 plot(scores)
 @
 

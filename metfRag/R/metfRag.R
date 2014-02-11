@@ -1,3 +1,7 @@
+#' @import rcdk
+#' @import rJava
+NULL
+
 .packageName <- "metfRag"
 
 require(rJava, quietly=TRUE)
@@ -7,6 +11,33 @@ require(rJava, quietly=TRUE)
 	.jinit(classpath=c(jar.metfrag))
 }
 
+
+
+#' Calculate MetFrag scores for molecules and a given tandem mass spectrum
+#' 
+#' The function calculates scores for molecules given in a SD file. The score
+#' calculation is based on the match of in silico generated fragments of the
+#' candidate molecules to the given tandem mass spectrum. A list of candidate
+#' molecules is returned sorted by their MetFrag score.
+#' 
+#' 
+#' @param sdf The name of the SD file containing candidate molecules
+#' @param mzs A \code{vector} mass to charge ratio values
+#' @param ints A \code{vector} of intensity values
+#' @param exact.mass The neutral exact mass of the precursor molecule
+#' @param number.threads Number threads for parallel execution (max. 8)
+#' @param mz.abs Absolute mass deviation (Da) allowed to match theoretical
+#' fragment massed to the given mz values
+#' @param mz.ppm Relative mass deviation (ppm) allowed to match theoretical
+#' fragment massed to the given mz values
+#' @param search.ppm The relative mass deviation (ppm) from \code{exact.mass}
+#' for candidate molecules in \code{sdf}
+#' @param pos.charge If \code{TRUE} the given tandem mass spectrum is assumed
+#' to be measured in positive mode
+#' @param mode Type of the measured molecule: -1 -> [M-H], 0 -> [M], 1 -> [M+H]
+#' @param tree.depth Maximal tree depth of MetFrag to generate fragments
+#' @author Christoph Ruttkies (\email{cruttkie@@ipb-halle.de})
+#' @export score.molecules.from.sdf
 score.molecules.from.sdf<-function(sdf, mzs, ints, exact.mass, number.threads=1, mz.abs=0.01, mz.ppm=10, search.ppm=10, pos.charge=TRUE, mode=1, tree.depth=2) {
 	
 	if(missing(sdf)) stop("Error: SDF is missing!")
