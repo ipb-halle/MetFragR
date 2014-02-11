@@ -78,16 +78,27 @@ scoredMols <- scoredMols[1:min(50, length(scoredMols))]
 cluster <- hclust.mols(mols=scoredMols, scoreprop="Score", idprop="DatabaseID")
 @
 
-and plot as dendrogram, with cluster numbers overlaid:
+and plot as dendrogram, with cluster numbers overlaid,
+so that you can later plot the MCSS separately:
 
-<<plotDendrogram, fig=TRUE, eps=FALSE>>=
+<<plotNumberedDendrogram, fig=TRUE, eps=FALSE>>=
 plot(cluster, hang=-1)
-myimages.clustNumbers(cluster, k=8, which=1:8, border=2)
+myimages.clustNumbers(cluster, k=7, which=1:7, border=2)
+
+# clusterreps <- getClusterMCSS(cluster, mols=scoredMols, k=7, which=1:7)
+# sapply(clusterreps, plot)
+@
+
+and plot as dendrogram, with MCSS overlaid:
+
+<<plotMCSSDendrogram, fig=TRUE, eps=FALSE>>=
+plot(cluster, hang=-1)
+myimages.hclust(cluster, mols=scoredMols, k=7, which=1:7, border=2)
 @
 
 Or include the scores:
 
-<<plotDendrogram, fig=TRUE, eps=FALSE>>=
+<<plotScoredDendrogram, fig=TRUE, eps=FALSE>>=
 plotCluster(scoredMols)
 @
 

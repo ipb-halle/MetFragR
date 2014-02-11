@@ -387,12 +387,12 @@ myimages.clustNumbers <- function (tree, k = NULL, which = NULL, x = NULL, h = N
            m[which[n]+1]+0.33, mean(rev(tree$height)[(k-1):k]),
            border = border[n])
 
-      cexonewidth <- strwidth(n)
+      cexonewidth <- strwidth(which[n])
       clusterwidth <- (m[which[n]+1]+0.33)-(m[which[n]]+0.66)
       
       text(x=(m[which[n]]+0.66)+clusterwidth/2,
            y=(mean(rev(tree$height)[(k-1):k])-par("usr")[3L])/2,
-        labels=n, col=border[n], cex=clusterwidth/cexonewidth)
+        labels=which[n], col=border[n], cex=clusterwidth/cexonewidth)
       
       retval[[n]] <- which(cluster==as.integer(names(clustab)[which[n]]))
     }
