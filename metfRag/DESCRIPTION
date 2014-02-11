@@ -1,11 +1,12 @@
 Package: metfRag
 Type: Package
 Title: Identification of metabolites using mass spectrometry data
-Version: 1.0
-Date: 2013-01-18
-Author: Sebastian Wolf, Christoph Ruttkies, Steffen Neumann sneumann@ipb-halle.de, cruttkie@ipb-halle.de
+Version: 1.0.2
+Date: 2014-01-28
+Author: Sebastian Wolf, Christoph Ruttkies <cruttkie@ipb-halle.de>, Steffen Neumann <sneumann@ipb-halle.de>
 Maintainer: Christoph Ruttkies <cruttkie@ipb-halle.de>
 Depends: R (>= 2.14.0), rJava, rcdk
+Imports: squash
 SystemRequirements: Java
 Description: Identification of metabolites using high precision mass spectrometry. Candidate molecules 
              of different databases are fragmented in silico and matched against mass to charge values. A score calculated

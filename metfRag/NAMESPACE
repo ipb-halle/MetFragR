@@ -1,5 +1,8 @@
-exportPattern("^[[:alpha:]]+")
+export("score.molecules.from.sdf",
+       "plotCluster")
+
 
 import("rJava")
 import("rcdk")
+import("squash")
 export("score.molecules.from.sdf")
