@@ -161,42 +161,13 @@ plotCluster <- function(mols, scoreprop="Score", idprop="DatabaseID", ...) {
 #' 
 #' Calculate the Maximum Common Substructure
 #' 
-#' @aliases getMCSS
-#' @usage getMCSS(mols)
-#' @param mols The a list of rCDK \code{mols}
-#' @examples 
-#'        library(rcdk)
-#'        smiles <- c('CCC', 'CCN', 'CCN(C)(C)',
-#'                    'c1ccccc1Cc1ccccc1',
-#'                    'C1CCC1CC(CN(C)(C))CC(=O)CC')
-#'        mols <- parse.smiles(smiles)
-#'        dummy <- getMCSS(mols)
-#' 
-#' @export
-
-getMCSS <- function(mols) {
-  l <- length(mols)
-  if (l<1)
-    stop("No MCSS for less than one molecule!")
-  
-  if (l==1)
-    return (mols[[1]])
-  
-  consensus <- mols[[1]]  
-  for (i in 2:l) {
-    consensus <- get.mcs(consensus, mols[[i]])
-  }
-  return (consensus)  
-}
-
-#' Chemical Clustering
-#' 
-#' Calculate the Maximum Common Substructure
-#' 
 #' @aliases getClusterMCSS
 #' @param hcluster Previously created hclust for \code{mols}
 #' @param mols The a list of rCDK \code{mols}
-#' @param h dendrogram cutoff
+#' @param k,h Scalar. Cut the dendrogram such that either exactly
+#' \code{k} clusters are produced or by cutting at height \code{h}.
+#' (either k or h needs to be specified)
+#' @param which A vector selecting the clusters to be returned
 #' @examples 
 #'        library(rcdk)
 #'        smiles <- c('CCC', 'CCN', 'CCN(C)(C)',
@@ -204,16 +175,31 @@ getMCSS <- function(mols) {
 #'                    'C1CCC1CC(CN(C)(C))CC(=O)CC')
 #'        mols <- parse.smiles(smiles)
 #'        cluster <- hclust.mols(mols)
-#'        clusterreps <- getClusterMCSS(cluster, mols) 
+#'        clusterreps <- getClusterMCSS(cluster, mols, k=2) 
 #' 
 #' @export
 
-getClusterMCSS <- function(hcluster, mols, h=0.2) {
-    classlabel   <- as.factor(cutree(hcluster, h=h))
-    clusterreps  <- tapply(mols, classlabel, metfRag:::getMCSS)
-    clusterreps
-}
+getClusterMCSS <- function(hcluster, mols, h=NULL, k=NULL, which=NULL) {
+
+  cluster <- NULL
   
+  if (!is.null(h)) {
+    cluster <- cutree(hcluster, h=h)
+  } else if (!is.null(k)) {
+    cluster <- cutree(hcluster, k=k)
+  } 
+
+  classlabel   <- as.factor(cluster)
+    clusterreps  <- tapply(mols, classlabel, metfRag:::getMCSS)
+    
+    if (missing(which)) {
+      which=seq(along=clusterreps)
+    }
+
+  m <- unique(cluster[hcluster$order])
+  
+  clusterreps[m[which]]
+}
 
 #' Chemical Clustering
 #' 
