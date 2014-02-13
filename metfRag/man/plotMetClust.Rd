@@ -1,0 +1,44 @@
+\name{plotMetClust}
+\alias{plotMetClust}
+\title{Chemical Clustering of MetFrag and MetFusion results SDF files}
+\usage{
+  plotMetClust(mols = NULL, filename = NULL,
+    type = c("auto", "sdf", "smi"), hclust = NULL,
+    scoreprop = "Score", idprop = "DatabaseID")
+}
+\arguments{
+  \item{hclust}{An object of class hclust which describes
+  the tree produced by a prior clustering process.}
+
+  \item{mols}{The a list of rCDK \code{mols}.}
+
+  \item{filename}{A filename to an SD File. If boths
+  \code{mols} and \code{filename} are given, filename is
+  ignored. Files are read by \code{cdk::load.molecules()}}
+
+  \item{type}{If a \code{filename} was given, the
+  \code{type} will be passed to
+  \code{cdk::load.molecules()}. The default value
+  \code{auto} uses the filename extension.}
+
+  \item{scoreprop}{The name of the property of the
+  molecules where the score is kept}
+
+  \item{idprop}{The name of the property of the molecules
+  where the database ID is kept}
+}
+\description{
+  Cluster a set of compounds ranked with MetFrag and
+  MetFusion
+}
+\examples{
+library(rcdk)
+       smiles <- c('CCC', 'CCN', 'CCN(C)(C)',
+                   'c1ccccc1Cc1ccccc1',
+                   'C1CCC1CC(CN(C)(C))CC(=O)CC')
+       mols <- parse.smiles(smiles)
+       dummy <- mapply(set.property, mols, "Score", c(1,2,3,4,5))
+       dummy <- mapply(set.property, mols, "DatabaseID", c("C1", "C2", "C3", "C4", "C5"))
+       plotMetClust(mols)
+}
+

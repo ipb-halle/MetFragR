@@ -1,0 +1,144 @@
+%
+% NOTE -- ONLY EDIT THE .Rnw FILE!!!  The .tex file is
+% likely to be overwritten.
+%
+% \VignetteIndexEntry{Metabolite Identification with MetFrag in R}
+% \VignetteKeywords{mass spectrometry, tandemms, metabolite identification}
+% \VignettePackage{metfRag}
+\documentclass[12pt]{article}
+
+\usepackage{hyperref}
+
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+\newcommand{\Rclass}[1]{{\textit{#1}}}
+\newcommand{\Rmethod}[1]{{\textit{#1}}}
+\newcommand{\Rfunarg}[1]{{\textit{#1}}}
+
+\textwidth=6.2in
+\textheight=8.5in
+%\parskip=.3cm
+\oddsidemargin=.1in
+\evensidemargin=.1in
+\headheight=-.3in
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+\title{Metabolite Identification with MetFrag in R}
+\author{C. Ruttkies, S. Neumann}
+\maketitle
+
+\section*{Introduction}
+
+This document describes how to use \Rpackage{metfRag}.
+
+<<LibraryPreloade>>=
+library(metfRag)
+library(rcdk)
+@
+
+\section{Structure file preparation}
+
+The included SDF is the result of MetFusion processing 
+of the MS/MS spectrum of the CASMI 2014 challenge 5.
+
+<<loadStructures>>=
+sdfile <- system.file("sdf/metfusion-category2-Challenge5-pubchem.sdf", package = "metfRag")
+mols <- load.molecules(sdfile)
+@
+
+\section{Scoring strcutures with MetFrag}
+
+<<scoreMetfrag>>=
+queryfile <- system.file("sdf/metfusion-category2-Challenge5.mf", package = "metfRag")
+challenge5 <- read.table(queryfile, sep="\t", col.names=c("mz", "inten"))
+
+scoredMols <- score.molecules.from.sdf(sdfile, mzs=challenge5[,"mz"], ints=challenge5[,"mz"], 
+                                   exact.mass=290.0646, 
+                                   mz.abs=0.001, mz.ppm=5, search.ppm=5, pos.charge=TRUE, mode=1, tree.depth=2)
+@
+
+
+\section{Visualisation of Results}
+
+First, check the score distribution:
+
+<<plotScores, fig=TRUE, eps=FALSE>>=
+scores <- getScores(scoredMols, scoreprop="Score")
+plot(scores)
+@
+
+
+Then, calculate clusters:
+
+<<calcCluster>>=
+
+scoredMols <- scoredMols[1:min(50, length(scoredMols))]
+cluster <- hclust.mols(mols=scoredMols, scoreprop="Score", idprop="DatabaseID")
+@
+
+and plot as dendrogram, with cluster numbers overlaid,
+
+<<plotNumberedDendrogram, fig=TRUE, eps=FALSE>>=
+plot(cluster, hang=-1)
+myimages.clustNumbers(cluster, k=7, which=1:7, border=2)
+
+clusterreps <- getClusterMCSS(cluster, mols=scoredMols, k=7, which=1:7)
+@
+
+so that you can later plot the MCSS separately, with an overlay of the clusternumber:
+
+<<plotClusterReps1, fig=TRUE, include = FALSE, eps=FALSE>>=
+  plotMol(clusterreps[[1]], watermark=1)
+@
+
+<<plotClusterReps2, fig=TRUE, include = FALSE, eps=FALSE>>=
+  plotMol(clusterreps[[2]], watermark=2)
+@
+
+<<plotClusterReps3, fig=TRUE, include = FALSE, eps=FALSE>>=
+  plotMol(clusterreps[[3]], watermark=3)
+@
+
+<<plotClusterReps4, fig=TRUE, include = FALSE, eps=FALSE>>=
+  plotMol(clusterreps[[4]], watermark=4)
+@
+
+<<plotClusterReps5, fig=TRUE, include = FALSE, eps=FALSE>>=
+  plotMol(clusterreps[[5]], watermark=5)
+@
+
+<<plotClusterReps6, fig=TRUE, include = FALSE, eps=FALSE>>=
+  plotMol(clusterreps[[6]], watermark=6)
+@
+
+<<plotClusterReps7, fig=TRUE, include = FALSE, eps=FALSE>>=
+  plotMol(clusterreps[[7]], watermark=7)
+@
+
+\begin{figure}
+\includegraphics[width=0.32\textwidth]{"metfRag-plotClusterReps1"}%
+\includegraphics[width=0.32\textwidth]{"metfRag-plotClusterReps2"}%
+\includegraphics[width=0.32\textwidth]{"metfRag-plotClusterReps3"}
+\includegraphics[width=0.32\textwidth]{"metfRag-plotClusterReps4"}%
+\includegraphics[width=0.32\textwidth]{"metfRag-plotClusterReps5"}%
+\includegraphics[width=0.32\textwidth]{"metfRag-plotClusterReps6"}
+\includegraphics[width=0.32\textwidth]{"metfRag-plotClusterReps7"}
+\caption{The seven cluster representatives}
+\end{figure}
+
+and plot as dendrogram, with MCSS overlaid:
+
+<<plotMCSSDendrogram, fig=TRUE, eps=FALSE>>=
+plot(cluster, hang=-1)
+myimages.hclust(cluster, mols=scoredMols, k=7, which=1:7, border=2)
+@
+
+Or include the scores:
+
+<<plotScoredDendrogram, fig=TRUE, eps=FALSE>>=
+plotCluster(scoredMols, score="Score")
+@
+
+\end{document}

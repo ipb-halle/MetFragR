@@ -1,0 +1,18 @@
+\name{getDatabaseIDs}
+\alias{getDatabaseIDs}
+\title{MetFrag result tools}
+\usage{
+  getDatabaseIDs(mols, idprop = "DatabaseID")
+}
+\arguments{
+  \item{mols}{A list of rCDK \code{molecules} with MetFrag
+  or MetFusion results}
+
+  \item{idprop}{The name of the property of the molecules
+  where the database ID is kept}
+}
+\description{
+  Small tools to extract information from MetFrag or
+  MetFusion results
+}
+
