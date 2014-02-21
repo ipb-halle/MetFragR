@@ -104,7 +104,7 @@ hclust.mols <- function(mols=NULL, smiles=NULL, filename=NULL,
 #'        mols <- parse.smiles(smiles)
 #'        dummy <- mapply(set.property, mols, "Score", c(1,2,3,4,5))
 #'        dummy <- mapply(set.property, mols, "DatabaseID", c("C1", "C2", "C3", "C4", "C5"))
-#'        plotCluster(mols, k=7)
+#'        plotCluster(mols, h=0.2)
 #' 
 #' @export
 
@@ -137,7 +137,7 @@ plotCluster <- function(mols, scoreprop="Score", idprop="DatabaseID", h=NULL, k=
 
   ## prepare for plotting
   classlabel   <- as.factor(paste(getDatabaseIDs(mols, idprop),
-                                  cutree(cluster, h=h), sep=" "))
+                                  cutree(cluster, h=h, k=k), sep=" "))
   clusterscore <- tapply(mols, classlabel, getScores)
   score.cmap <- makecmap(score.explained,
                          n = 8,
@@ -370,10 +370,7 @@ myimages.clustNumbers <- function (tree, k = NULL, which = NULL, x = NULL, h = N
   retval <- list()
   if (!is.null(border)) {
     border <- rep_len(border, length(which))
-    for(n in seq_along(which)) {
-      cat(m[which[n]]+0.66, par("usr")[3L], ", ",
-           m[which[n]+1]+0.33, rev(tree$height)[(k-1):k], "\n")
-      
+    for(n in seq_along(which)) {    
       rect(m[which[n]]+0.66, par("usr")[3L],
            m[which[n]+1]+0.33, 
            ifelse(is.na(mean(rev(tree$height)[(k-1):k])), 0.5, mean(rev(tree$height)[(k-1):k])) ,
