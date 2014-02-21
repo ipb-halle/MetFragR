@@ -32,6 +32,6 @@ library(rcdk)
        mols <- parse.smiles(smiles)
        dummy <- mapply(set.property, mols, "Score", c(1,2,3,4,5))
        dummy <- mapply(set.property, mols, "DatabaseID", c("C1", "C2", "C3", "C4", "C5"))
-       plotCluster(mols, k=7)
+       plotCluster(mols, h=0.2)
 }
 
