@@ -138,7 +138,7 @@ myimages.hclust(cluster, mols=scoredMols, k=7, which=1:7, border=2)
 Or include the scores:
 
 <<plotScoredDendrogram, fig=TRUE, eps=FALSE>>=
-plotCluster(scoredMols, score="Score")
+plotCluster(scoredMols, score="Score", h=0.2)
 @
 
 \end{document}
