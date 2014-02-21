@@ -2,13 +2,17 @@
 \alias{plotMol}
 \title{Plotting a molecule}
 \usage{
-  plotMol(mol = NULL, smiles = NULL, watermark = NULL)
+  plotMol(mol = NULL, smiles = NULL, width = 200,
+    height = 200, watermark = NULL)
 }
 \arguments{
   \item{mol}{An rCDK \code{mol} object}
 
   \item{smiles}{A SMILES string, ignored if mol is
   supplied}
+
+  \item{width,height}{Number of pixels for molecule image
+  in x,y}
 
   \item{watermark}{A string written across the image as
   watermark}

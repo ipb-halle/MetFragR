@@ -49,20 +49,21 @@ getDatabaseIDs <- function(mols, idprop="DatabaseID") {
 #' @aliases plotMol
 #' @param mol An rCDK \code{mol} object
 #' @param smiles A SMILES string, ignored if mol is supplied
+#' @param width,height Number of pixels for molecule image in x,y
 #' @param watermark A string written across the image as watermark
 #' @export
-plotMol <- function(mol=NULL, smiles=NULL, watermark=NULL) {
+plotMol <- function(mol=NULL, smiles=NULL, width = 200, height = 200, watermark=NULL) {
   if (missing(mol)) {
     mol <- parse.smiles(smiles)[[1]]
   }
   #  img <- view.image.2d(mol, width = 1024, height = 1024)
-  img <- view.image.2d(mol, width = 200, height = 200)
+  img <- view.image.2d(mol, width = width, height = height)
   plot.new()
   plot.window(xlim=c(0,1), ylim=c(0,1))
   if (!is.null(watermark)) {
     text(x=0.5, y=0.5, label=watermark, 
          cex=0.55/strwidth(watermark), 
-         col=rgb(1,0.75,0.75))
+         col=rgb(0.75, 1,0.75))
   }
   rasterImage(alpha2image(img), 0,0, 1,1)
 }
