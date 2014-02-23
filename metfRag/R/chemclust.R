@@ -341,8 +341,7 @@ myimages.clustNumbers <- function (tree, k = NULL, which = NULL, x = NULL, h = N
   } else if (is.null(k)) {
     stop("specify exactly one of 'k' and 'h'")
   }
-  cat("k is now ", k, "\n")
-  
+
   #if (k < 2 | k > length(tree$height)) {
   #  stop("k must be between 2 and %d", length(tree$height))
   #}
@@ -366,7 +365,7 @@ myimages.clustNumbers <- function (tree, k = NULL, which = NULL, x = NULL, h = N
   
   if (any(which > k)) 
     stop("all elements of 'which' must be between 1 and %d", k)
-  cat("hihi\n")
+  
   retval <- list()
   if (!is.null(border)) {
     border <- rep_len(border, length(which))
