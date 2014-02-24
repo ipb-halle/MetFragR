@@ -34,8 +34,8 @@
 This document describes how to use \Rpackage{metfRag}.
 
 <<LibraryPreloade>>=
-library(metfRag)
 library(rcdk)
+library(metfRag)
 @
 
 \section{Structure file preparation}
@@ -54,9 +54,12 @@ mols <- load.molecules(sdfile)
 queryfile <- system.file("sdf/metfusion-category2-Challenge5.mf", package = "metfRag")
 challenge5 <- read.table(queryfile, sep="\t", col.names=c("mz", "inten"))
 
-scoredMols <- score.molecules.from.sdf(sdfile, mzs=challenge5[,"mz"], ints=challenge5[,"mz"], 
-                                   exact.mass=290.0646, 
-                                   mz.abs=0.001, mz.ppm=5, search.ppm=5, pos.charge=TRUE, mode=1, tree.depth=2)
+# Disabled, due to problems with newest rCDK:
+#scoredMols <- score.molecules.from.sdf(sdfile, mzs=challenge5[,"mz"], ints=challenge5[,"mz"], 
+#                                   exact.mass=290.0646, 
+#                                   mz.abs=0.001, mz.ppm=5, search.ppm=5, pos.charge=TRUE, mode=1, tree.depth=2)
+
+scoredMols <- mols
 @
 
 
@@ -66,6 +69,8 @@ First, check the score distribution:
 
 <<plotScores, fig=TRUE, eps=FALSE>>=
 scores <- getScores(scoredMols, scoreprop="Score")
+scores <- getScores(scoredMols, scoreprop="newscore")
+
 plot(scores)
 @
 
@@ -138,7 +143,8 @@ myimages.hclust(cluster, mols=scoredMols, k=7, which=1:7, border=2)
 Or include the scores:
 
 <<plotScoredDendrogram, fig=TRUE, eps=FALSE>>=
-plotCluster(scoredMols, score="Score")
+#plotCluster(scoredMols, score="Score", h=0.2)
+plotCluster(scoredMols, score="Score", h=0.2, scoreprop="newscore")
 @
 
 \end{document}

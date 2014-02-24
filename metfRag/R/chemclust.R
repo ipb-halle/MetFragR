@@ -91,6 +91,9 @@ hclust.mols <- function(mols=NULL, smiles=NULL, filename=NULL,
 #' @param mols The a list of rCDK \code{mols}
 #' @param scoreprop The name of the property of the molecules where the score is kept
 #' @param idprop The name of the property of the molecules where the database ID is kept
+#' @param k,h Scalar. Cut the dendrogram such that either exactly
+#' \code{k} clusters are produced or by cutting at height \code{h}.
+#' (either k or h needs to be specified)
 #' @param ... the remaining parameters are passed down to \code{dendromat()}
 #' @import squash
 #' @examples 
@@ -101,11 +104,11 @@ hclust.mols <- function(mols=NULL, smiles=NULL, filename=NULL,
 #'        mols <- parse.smiles(smiles)
 #'        dummy <- mapply(set.property, mols, "Score", c(1,2,3,4,5))
 #'        dummy <- mapply(set.property, mols, "DatabaseID", c("C1", "C2", "C3", "C4", "C5"))
-#'        plotCluster(mols)
+#'        plotCluster(mols, h=0.2)
 #' 
 #' @export
 
-plotCluster <- function(mols, scoreprop="Score", idprop="DatabaseID", ...) {
+plotCluster <- function(mols, scoreprop="Score", idprop="DatabaseID", h=NULL, k=NULL, ...) {
   
   clusters  <- list()
   
@@ -134,7 +137,7 @@ plotCluster <- function(mols, scoreprop="Score", idprop="DatabaseID", ...) {
 
   ## prepare for plotting
   classlabel   <- as.factor(paste(getDatabaseIDs(mols, idprop),
-                                  cutree(cluster, h=0.2), sep=" "))
+                                  cutree(cluster, h=h, k=k), sep=" "))
   clusterscore <- tapply(mols, classlabel, getScores)
   score.cmap <- makecmap(score.explained,
                          n = 8,
@@ -333,16 +336,15 @@ myimages.clustNumbers <- function (tree, k = NULL, which = NULL, x = NULL, h = N
   if (!is.null(h)) {
     if (!is.null(k)) 
       stop("specify exactly one of 'k' and 'h'")
-    k <- min(which(rev(tree$height) < h))
+    k <- min(length(tree$height)+1, which(rev(tree$height) < h)) # Can 
     k <- max(k, 2)
   } else if (is.null(k)) {
     stop("specify exactly one of 'k' and 'h'")
   }
-  
-  if (k < 2 | k > length(tree$height)) {
-    stop(gettextf("k must be between 2 and %d", length(tree$height)), 
-         domain = NA)
-  }
+
+  #if (k < 2 | k > length(tree$height)) {
+  #  stop("k must be between 2 and %d", length(tree$height))
+  #}
   
   if (is.null(cluster)) {
     cluster <- cutree(tree, k = k)
@@ -362,22 +364,22 @@ myimages.clustNumbers <- function (tree, k = NULL, which = NULL, x = NULL, h = N
   }
   
   if (any(which > k)) 
-    stop(gettextf("all elements of 'which' must be between 1 and %d", 
-                  k), domain = NA)
+    stop("all elements of 'which' must be between 1 and %d", k)
   
   retval <- list()
   if (!is.null(border)) {
     border <- rep_len(border, length(which))
-    for(n in seq_along(which)) {
+    for(n in seq_along(which)) {    
       rect(m[which[n]]+0.66, par("usr")[3L],
-           m[which[n]+1]+0.33, mean(rev(tree$height)[(k-1):k]),
+           m[which[n]+1]+0.33, 
+           ifelse(is.na(mean(rev(tree$height)[(k-1):k])), 0.5, mean(rev(tree$height)[(k-1):k])) ,
            border = border[n])
 
       cexonewidth <- strwidth(which[n])
       clusterwidth <- (m[which[n]+1]+0.33)-(m[which[n]]+0.66)
       
       text(x=(m[which[n]]+0.66)+clusterwidth/2,
-           y=(mean(rev(tree$height)[(k-1):k])-par("usr")[3L])/2,
+           y=(ifelse(is.na(mean(rev(tree$height)[(k-1):k])), 0.5, mean(rev(tree$height)[(k-1):k]))-par("usr")[3L])/2,
         labels=which[n], col=border[n], cex=clusterwidth/cexonewidth)
       
       retval[[n]] <- which(cluster==as.integer(names(clustab)[which[n]]))

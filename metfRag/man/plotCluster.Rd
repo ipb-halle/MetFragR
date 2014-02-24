@@ -3,7 +3,7 @@
 \title{Chemical Clustering}
 \usage{
   plotCluster(mols, scoreprop = "Score",
-    idprop = "DatabaseID", ...)
+    idprop = "DatabaseID", h = NULL, k = NULL, ...)
 }
 \arguments{
   \item{mols}{The a list of rCDK \code{mols}}
@@ -13,6 +13,10 @@
 
   \item{idprop}{The name of the property of the molecules
   where the database ID is kept}
+
+  \item{k,h}{Scalar. Cut the dendrogram such that either
+  exactly \code{k} clusters are produced or by cutting at
+  height \code{h}. (either k or h needs to be specified)}
 
   \item{...}{the remaining parameters are passed down to
   \code{dendromat()}}
@@ -28,6 +32,6 @@ library(rcdk)
        mols <- parse.smiles(smiles)
        dummy <- mapply(set.property, mols, "Score", c(1,2,3,4,5))
        dummy <- mapply(set.property, mols, "DatabaseID", c("C1", "C2", "C3", "C4", "C5"))
-       plotCluster(mols)
+       plotCluster(mols, h=0.2)
 }
 
