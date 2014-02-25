@@ -59,6 +59,7 @@ score.molecules.from.sdf<-function(sdf, mzs, ints, exact.mass, number.threads=1,
 	
 	obj=.jnew("de/ipbhalle/metfrag/r/MetfRag")
 	mols<-.jcall(obj, '[Lorg/openscience/cdk/interfaces/IAtomContainer;', 'scoreMoleculesAgainstSpectrum', sdf, .jarray(mzs,"[D"), .jarray(ints,"[D"), exact.mass, as.integer(number.threads), mz.abs, mz.ppm, search.ppm, pos.charge, as.integer(mode), as.integer(tree.depth))
+	obj = .jnull()
 	if(length(mols) == 0) cat("No results generated!","\n")
 	return(mols)
 }
