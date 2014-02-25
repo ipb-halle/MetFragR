@@ -272,7 +272,7 @@ myimages.hclust <- function (tree, k = NULL, which = NULL, x = NULL, h = NULL,
   
   retval <- list()
   if (!is.null(border)) {
-    border <- rep_len(border, length(which))
+    border <- rep(border, length_out = length(which))
     for(n in seq_along(which)) {
       rect(m[which[n]]+0.66, par("usr")[3L],
            m[which[n]+1]+0.33, mean(rev(tree$height)[(k-1):k]),
@@ -368,7 +368,7 @@ myimages.clustNumbers <- function (tree, k = NULL, which = NULL, x = NULL, h = N
   
   retval <- list()
   if (!is.null(border)) {
-    border <- rep_len(border, length(which))
+    border <- rep(border, length_out = length(which))
     for(n in seq_along(which)) {    
       rect(m[which[n]]+0.66, par("usr")[3L],
            m[which[n]+1]+0.33, 
