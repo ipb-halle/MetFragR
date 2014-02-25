@@ -6,12 +6,8 @@ R package for MetFrag
 Installation
 ------------
 
- # R CMD check metfRag
- 
- # R CMD build metfRag
- 
- # R
- 
- > install.packages("metfRag",repos=NULL,type="source")
- 
- > library(metfRag)
+\# R CMD check metfRag <br>
+\# R CMD build metfRag <br>
+\# R <br>
+\> install.packages("metfRag",repos=NULL,type="source") <br>
+\> library(metfRag) <br>
