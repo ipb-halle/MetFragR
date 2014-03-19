@@ -1,84 +1,110 @@
-library("rcdk");
-library("SSOAP");
-library("KEGGREST");
-library("RCurl");
-
 Sys.setlocale("LC_NUMERIC",'C');
 
-#KEGG
-db.kegg.getIdByMass <- function(mass)
+db.searchToFile <- function(file, db, type, value)
 {
-  mass      <- as.double(mass);
-  kegg.id   <- names(keggFind("compound",mass,"exact_mass"));
+  database <- c('kegg', 'pubchem');
   
-  return(kegg.id);
-}
-
-db.kegg.getIdByFormula <- function(formula)
-{
-  mass      <- as.double(mass);
-  kegg.id   <- names(keggFind("compound",formula,"formula"));
-  
-  return(kegg.id);
-}
-
-db.kegg.getMolecule <- function(kegg.id)
-{
-  kegg.mol <- NULL;
-  
-  for (i in (1:length(kegg.id)))
+  if (any(db == database) == TRUE)
   {
-    kegg.url    <- paste("http://rest.kegg.jp/get/",kegg.id[i],"/mol",sep="");
-    kegg.mol    <- c(kegg.mol, load.molecules(molfiles=kegg.url));    
+    func.getId    <- paste("db",db,"getId",sep=".");
+    func.chemFile <- paste("db",db,"MoleculeToFile",sep=".");
+    
+    db.ids <- do.call(func.getId, list(type, value));
+    do.call(func.chemFile, list(file, db.ids));
+  }
+}
+
+#KEGG
+db.kegg.getId <- function(type, value)
+{
+  kegg.types <- c('exact_mass', 'entry', 'name', 'formula');
+  
+  if (any(kegg.types == type) == TRUE)
+  {
+    if (kegg.types[1] == type)
+    { value <- as.double(value); }
+    
+    kegg.id <- names(keggFind("compound", value, type));
+    return(kegg.id);
   }
   
-  return(kegg.mol);
+  return(c());
+}
+
+db.kegg.MoleculeToFile <- function(file, ids)
+{
+  if (length(ids) == 0)
+  { return(FALSE); }  
+  
+  kegg.loc  <- "http://rest.kegg.jp";
+  kegg.op   <- 'get';
+  kegg.filetype <- 'mol';
+  kegg.id <- paste(ids, collapse="+");        
+  
+  url     <- paste(kegg.loc,kegg.op,kegg.id,kegg.filetype,sep="/"); 
+  download.file(url, file);
+  
+  if (file.exists(file))
+  { return(TRUE); }
+  
+  return(FALSE);
 }
 
 #PubChem
-db.pubchem.getIdByMass <- function(mass)
-{  
-  pc.loc    <- "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?";
-  pc.query  <- "db=pccompound&term=100";
-  #[EXMASS]
-  pc.mass   <- paste("[MIMASS]:", mass, "[MIMASS]", sep="");
-  pc.url    <- paste(pc.loc,pc.query,pc.mass,sep="");
-  pc.data   <- getURL(pc.url);
-  
-  pc.data   <- xmlToList(xmlParse(pc.data));
-  pc.data   <- as.matrix(pc.data$IdList);
-  colnames(pc.data) <- 'CID';
-  rownames(pc.data) <- NULL;
-  
-  return(pc.data);
-}
-
-db.pubchem.getIdByFormula <- function(form)
-{  
-  pc.loc    <- "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?";
-  pc.query  <- "db=pccompound&term=";
-  pc.url    <- paste(pc.loc, pc.query, form, sep="");
-  pc.data   <- getURL(pc.url);
-  
-  pc.data   <- xmlToList(xmlParse(pc.data));
-  pc.data   <- as.matrix(pc.data$IdList);
-  colnames(pc.data) <- 'CID';
-  rownames(pc.data) <- NULL;
-  
-  return(pc.data);
-}
-
-db.pubchem.getMolecule <- function(pc.id)
+db.pubchem.getId <- function(type, value)
 {
-  pc.loc    <- "http://pubchem.ncbi.nlm.nih.gov/rest/pug/";
-  pc.mol    <- NULL;
+  pc.loc <- "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?";
+  pc.query <- "db=pccompound&term=";
+  pc.type  <- c('formula', 'mimass','exmass', 'cid');
   
-  for (i in (1:length(pc.id)))
+  if (any(pc.type == type) == TRUE)
   {
-    pc.input  <- paste("compound/cid/",pc.id[i,],"/SDF",sep="");
-    pc.url    <- paste(pc.loc,pc.input,sep="");
-    pc.mol    <- c(pc.mol, load.molecules(molfiles=pc.url));    
+    if (type == pc.type[2] || type == pc.type[3])
+    { value = as.double(value); }
+    
+    if (type != pc.type[1])
+    {
+      pc.mass <- paste(100,
+                       "[",toupper(type),"]:",
+                       value,
+                       "[",toupper(type),"]",
+                       sep="");
+    }
+    else
+    { pc.mass <- NULL; }
+    
+    pc.url <- paste(pc.loc, pc.query, pc.mass, sep="");
+    pc.data <- getURI(pc.url);
+    
+    return(db.pubchem.XMLToList(pc.data))
   }
   
-  return(pc.mol);
+  return(c());
+}  
+
+db.pubchem.XMLToList <- function(xml)
+{
+  pc.data <- xmlToList(xmlParse(xml));
+  pc.data <- as.matrix(pc.data$IdList);
+  colnames(pc.data) <- 'CID';
+  rownames(pc.data) <- NULL;
+  
+  return(pc.data);
+}
+
+db.pubchem.MoleculeToFile <- function(file, ids)
+{
+  pc.loc      <- "http://pubchem.ncbi.nlm.nih.gov/rest/pug";
+  pc.db       <- "compound"
+  pc.type     <- "cid";
+  pc.filetype <- "SDF";
+  pc.ids <- paste(ids,collapse=",");
+  
+  pc.url <- paste(pc.loc,pc.db,pc.type,pc.ids,pc.filetype,sep="/");
+  download.file(pc.url, file);
+  
+  if (file.exists(file))
+  { return(TRUE); }  
+  
+  return(FALSE);
 }
