@@ -1,6 +1,6 @@
 Sys.setlocale("LC_NUMERIC",'C');
 
-db.searchToFile <- function(file, db, type, value)
+db.search <- function(file, db, type, value)
 {
   database <- c('kegg', 'pubchem');
   
@@ -17,20 +17,40 @@ db.searchToFile <- function(file, db, type, value)
 #KEGG
 db.kegg.getId <- function(type, value)
 {
-  kegg.types <- c('exact_mass', 'entry', 'name', 'formula');
+  kegg.types  <- c('exact_mass', 'formula');
+  kegg.loc    <- "http://rest.kegg.jp/find";
+  kegg.db     <- "compound";  
   
   if (any(kegg.types == type) == TRUE)
   {
     if (kegg.types[1] == type)
     { value <- as.double(value); }
     
-    kegg.id <- names(keggFind("compound", value, type));
-    return(kegg.id);
+    kegg.url <- paste(kegg.loc,kegg.db,value,type,sep="/");
+    kegg.data <- getURI(kegg.url);
+    
+    return(db.kegg.convertString(kegg.data));
   }
   
-  return(c());
+  return(NULL);
 }
 
+db.kegg.convertString <- function(idstring)
+{
+  ids   <- str_split(idstring, "\n");
+  size  <- length(ids[[1]]);
+  kegg.id   <- NULL;  
+  converted <- sapply(ids[[1]],str_split,"\t")
+  
+  for (i in 1:(size-1))
+  {
+    kegg.id <- rbind(kegg.id, converted[[i]][1]);
+  }
+  
+  colnames(kegg.id) <- 'CPD';
+  return(kegg.id);
+}
+  
 db.kegg.MoleculeToFile <- function(file, ids)
 {
   if (length(ids) == 0)
@@ -51,13 +71,13 @@ db.kegg.MoleculeToFile <- function(file, ids)
 }
 
 #PubChem
-db.pubchem.getId <- function(type, value)
+db.pubchem.getId <- function(type, value=NULL)
 {
   pc.loc <- "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?";
   pc.query <- "db=pccompound&term=";
-  pc.type  <- c('formula', 'mimass','exmass', 'cid');
+  pc.type  <- c('formula', 'mimass','exmass');
   
-  if (any(pc.type == type) == TRUE)
+  if (any(pc.type == type) == TRUE && missing(value) != TRUE)
   {
     if (type == pc.type[2] || type == pc.type[3])
     { value = as.double(value); }
@@ -71,15 +91,15 @@ db.pubchem.getId <- function(type, value)
                        sep="");
     }
     else
-    { pc.mass <- NULL; }
+    { pc.mass <- value; }
     
     pc.url <- paste(pc.loc, pc.query, pc.mass, sep="");
     pc.data <- getURI(pc.url);
     
-    return(db.pubchem.XMLToList(pc.data))
+    return(db.pubchem.XMLToList(pc.data));
   }
   
-  return(c());
+  return(NULL);
 }  
 
 db.pubchem.XMLToList <- function(xml)
