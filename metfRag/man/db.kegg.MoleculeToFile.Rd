@@ -4,8 +4,8 @@
   Saves Mol-File by KEGG C Numbers
 }
 \description{
-  This function receives data from KEGG by KEGG Entrys and save the result
-  in a mol-file.
+  This function receives data from KEGG by KEGG Entrys and 
+  write the result in a mol-file.
 }
 \usage{
   db.kegg.MoleculeToFile(file, ids)

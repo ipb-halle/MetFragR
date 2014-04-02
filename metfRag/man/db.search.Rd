@@ -22,7 +22,7 @@
   }
   \item{type}{
     A character string describes the available search methods.
-    For Kegg applies 'exact_mass', 'formula' and 
+    For Kegg applies 'exact_mass', 'entry', 'formula' and 
     for PubChem applies 'formula', 'mimass', 'exmass'.
   }
   \item{value}{

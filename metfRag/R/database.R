@@ -17,7 +17,7 @@ db.search <- function(file, db, type, value)
 #KEGG
 db.kegg.getId <- function(type, value)
 {
-  kegg.types  <- c('exact_mass', 'formula');
+  kegg.types  <- c('exact_mass', 'entry', 'formula');
   kegg.loc    <- "http://rest.kegg.jp/find";
   kegg.db     <- "compound";  
   

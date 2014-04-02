@@ -12,7 +12,7 @@
 \arguments{
   \item{type}{
     A character string describes the available search methods.
-    For Kegg applies 'exact_mass' or 'formula'.
+    Using KEGG the types are 'exact_mass', 'entry' and 'formula'.
   }
   \item{value}{
     The search value for a specified database. The mass should be numeric and
