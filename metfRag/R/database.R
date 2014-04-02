@@ -75,7 +75,7 @@ db.pubchem.getId <- function(type, value=NULL)
 {
   pc.loc <- "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?";
   pc.query <- "db=pccompound&term=";
-  pc.type  <- c('formula', 'mimass','exmass');
+  pc.type  <- c('formula','mimass','exmass','cid');
   
   if (any(pc.type == type) == TRUE && missing(value) != TRUE)
   {

@@ -14,11 +14,12 @@
   \item{type}{
     A character string describes the available search methods.
     For PubChem applies 'mimass' for monoisotopic mass, 'exmass' for
-    exact mass, or 'formula'.
+    exact mass, cid for compound id or 'formula'.
   }
   \item{value}{
-    The search value for a specified database. Both, the exact mass and the monoisotopic 
-    mass should be numeric and the other types are characters. 
+    The search value for a specified database. Both, the exact mass 
+    and the monoisotopic mass should be numeric and the other types 
+    are characters. 
   }  
 }
 \value{
