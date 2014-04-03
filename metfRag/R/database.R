@@ -7,7 +7,7 @@ db.search <- function(file, db, type, value)
   if (any(db == database) == TRUE)
   {
     func.getId    <- paste("db",db,"getId",sep=".");
-    func.chemFile <- paste("db",db,"MoleculeToFile",sep=".");
+    func.chemFile <- paste("db",db,"getMoleculeContainer",sep=".");
     
     db.ids <- do.call(func.getId, list(type, value));
     do.call(func.chemFile, list(file, db.ids));
