@@ -8,15 +8,10 @@
   monoisotopic mass, formula or name.
 }
 \usage{
-  db.kegg.getId(type, value)
+  db.kegg.getId(seek)
 }
 \arguments{
-  \item{type}{
-    A character string describes the available search methods.
-    For PubChem applies 'mimass' for monoisotopic mass, 'exmass' for
-    exact mass, cid for compound id or 'formula'.
-  }
-  \item{value}{
+  \item{seek}{
     The search value for a specified database. Both, the exact mass 
     and the monoisotopic mass should be numeric and the other types 
     are characters. 
@@ -38,17 +33,11 @@
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 %}
 \examples{
-type <- 'mimass';
-val  <- 174.05;
-db.pubchem.getId(type, val);
+params <- list(mass=174.05, range=0);
+db.pubchem.getId(params);
 
-type <- 'exmass';
-val  <- 174.05;
-db.pubchem.getId(type, val);
-
-type <- 'formula';
-val  <- 'H2O';
-db.pubchem.getId(type, val);
+params <- list(formula='H2O');
+db.pubchem.getId(params);
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

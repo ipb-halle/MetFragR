@@ -1,21 +1,18 @@
-\name{db.kegg.MoleculeToFile}
-\alias{db.kegg.MoleculeToFile}
+\name{db.pubchem.MoleculeToFile}
+\alias{db.pubchem.MoleculeToFile}
 \title{
-  Saves Mol-File by KEGG C Numbers
+  Saves SDF-File by PubChem Ids
 }
 \description{
-  This function receives data from KEGG by KEGG Entrys and 
-  write the result in a mol-file.
+  This function receives data from PubChem by PubChem IDs and save the result
+  in a sdf-file.
 }
 \usage{
-  db.kegg.MoleculeToFile(file, ids)
+  db.pubchem.getMoleculeContainer(ids)
 }
 \arguments{
-  \item{file}{
-    A character string describes a path to mol-file.
-  }
   \item{ids}{
-    A matrix with one column contains KEGG Entrys.
+    A matrix with one column contains PubChem IDs.
   }  
 }
 \value{
@@ -35,13 +32,11 @@
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 %}
 \examples{
-ids <- c("cpd:C00493","cpd:C04236","cpd:C16588");
+ids <- c("73264919","73264709","73264708");
 mat <- matrix(c(ids),3);
-file <- paste(getwd(),"molecule.mol",sep="/");
-db.kegg.MoleculeToFile(file, mat);
+db.pubchem.getMoleculeContainer(mat);
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 %\keyword{ ~kwd1 }
 %\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
-

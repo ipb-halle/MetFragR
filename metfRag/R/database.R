@@ -296,7 +296,7 @@ db.pubchem.getId <- function(seek=NULL)
   if (is.null(seek$mass) == FALSE)
   {
     seek <- db.lib.calcMass(seek);
-    
+
     pc.mass <- paste(seek$lbound,
                      "[",toupper(pc.type[pc.idx]),"]:",
                      seek$ubound,
@@ -324,7 +324,7 @@ db.pubchem.XMLToList <- function(xml)
 {
   pc.data <- xmlToList(xmlParse(xml));
   
-  if (is.null(pc.data$WarningList) == TRUE)
+  if (is.null(pc.data$WarningList) == TRUE && pc.data$Count != '0')
   { 
     pc.data <- as.matrix(pc.data$IdList);
     colnames(pc.data) <- 'CID';
