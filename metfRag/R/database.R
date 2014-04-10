@@ -1,34 +1,189 @@
 Sys.setlocale("LC_NUMERIC",'C');
 
-db.search <- function(file, db, type, value)
+db.search <- function(db=NULL, seek=NULL)
 {
-  database <- c('kegg', 'pubchem');
+  if(is.null(db) == TRUE || is.null(seek) == TRUE)
+  { return(FALSE); }
   
-  if (any(db == database) == TRUE)
+  database <- c('pubchem', 'kegg');
+  dbInDatabase <- db %in% database;
+  
+  if (any(FALSE == dbInDatabase) == TRUE)
+  { return(FALSE); }
+  
+  container <- NULL;
+  
+  for (i in 1:length(db))
   {
-    func.getId    <- paste("db",db,"getId",sep=".");
-    func.chemFile <- paste("db",db,"getMoleculeContainer",sep=".");
+    func.getId    <- paste("db",db[i],"getId",sep=".");
+    func.chemFile <- paste("db",db[i],"getMoleculeContainer",sep=".");
     
-    db.ids <- do.call(func.getId, list(type, value));
-    do.call(func.chemFile, list(file, db.ids));
+    db.ids <- do.call(func.getId, list(seek));
+    
+    if (is.null(db.ids) == FALSE && is.na(db.ids[1]) == FALSE)
+    {
+      container <- c(container, do.call(func.chemFile, list(db.ids)));    
+    }
+    else
+    {
+      str <- paste("For database ",db[i]," was no entry found. 
+                  Maybe your range should be increase.",sep="'");
+      warning(str);
+    }
   }
+  
+  return(container);
+}
+
+#Library
+db.lib.matchFunc <- function(names.seek, names.func)
+{
+  is.matched <- match(names.func, names.seek);
+  idx <- NULL;
+  
+  for (i in 1:length(is.matched))
+  {
+    if (is.na(is.matched[i]) == FALSE)
+    {
+      idx <- c(idx,i);
+    }
+  }
+  
+  if (is.null(idx) == FALSE)
+  { return(idx); }
+    
+  return(NULL);
+}
+
+db.lib.calcMass <- function(seek)
+{
+  seek$mass <- as.double(seek$mass);
+  
+  if (is.null(seek$range) == FALSE)
+  {
+    seek$range <- as.double(seek$range);
+  }
+  else
+  { seek$range <- as.double(0); }
+  
+  seek = list(lbound=(seek$mass - seek$range),
+              ubound=(seek$mass + seek$range));
+  
+  return(seek);
+}
+
+#ChemSpider
+db.chemspider.buildURI <- function(func, values)
+{
+  cs.loc <- "http://www.chemspider.com/MassSpecAPI.asmx";
+  cs.func <- func;
+  cs.main <- paste(cs.loc, cs.func, sep="/");
+  cs.values <- paste(names(values), values, sep="=");
+  
+  if(length(values) > 1)
+  { cs.values <- paste(cs.values,collapse="&"); }
+  
+  cs.url <- paste(cs.main, cs.values, sep="?");
+  
+  return(cs.url);
+}
+
+db.chemspider.XMLToList <- function(xml)
+{
+  xmlList <- xmlToList(xml);
+  xmlList <- as.matrix(xmlList);
+  colnames(xmlList) <- "CSID";
+  rownames(xmlList) <- NULL;
+  
+  return(xmlList);
+}
+
+db.chemspider.getId <- function(seek=NULL)
+{
+  if (is.null(seek) == TRUE)
+  { return(FALSE); }
+  
+  cs.seek.names <- names(seek);
+  cs.seek.funcs <- list(mass = "SearchByMass2", 
+                        formula = "SearchByFormula2");
+  
+  idx <- db.lib.matchFunc(cs.seek.names, names(cs.seek.funcs));
+  
+  if (is.null(seek$range) == TRUE && is.null(seek$mass) == FALSE)
+  { seek = c(seek, range=as.double(0)); }
+  
+  if (is.null(idx) == FALSE)
+  { cs.url <- db.chemspider.buildURI(cs.seek.funcs[idx], seek); }
+  
+  cs.data <- getURI(cs.url);
+  cs.data <- db.chemspider.XMLToList(cs.data);
+  
+  return(cs.data);
+}
+
+db.chemspider.getMoleculeContainer <- function(ids, token, cal3d=FALSE)
+{
+  cs.func <- list(mol = "GetRecordMol");
+  cs.idList <- NULL;
+  
+  for (i in 1:length(ids))
+  {
+    cs.idList <- c(cs.idList,
+                   db.chemspider.buildURI(cs.func, 
+                                          list(csid=ids[[i]][1], 
+                                               calc3d=cal3d, 
+                                               token=token)));
+  } 
+  return(cs.idList)
+  xmlLists <- getURIAsynchronous(cs.idList);
+  x <- db.chemspider.XMLToList(xmlLists[1])
+  #x <- load.molecules(x)
+  #x <- lapply(xmlLists, db.chemspider.XMLToList);
+  
+  return(x);
 }
 
 #KEGG
-db.kegg.getId <- function(type, value)
+db.kegg.getQuery <- function(seek, types)
 {
-  kegg.types  <- c('exact_mass', 'mol_weight', 'formula');
-  kegg.loc    <- "http://rest.kegg.jp/find";
-  kegg.db     <- "compound";  
+  names.seek <- names(seek);
+  idx <- db.lib.matchFunc(names.seek, names(types));
   
-  if (any(kegg.types == type) == TRUE)
-  {
-    if (kegg.types[1] == type)
-    { value <- as.double(value); }
+  if (is.null(idx) == FALSE)
+  {    
+    seek <- list(str=seek[[1]], idx=idx);
     
-    kegg.url <- paste(kegg.loc,kegg.db,value,type,sep="/");
+    if (is.null(seek$mass) == FALSE)
+    { 
+      seek <- db.lib.calcMass(seek);
+      seek <- list(str=paste(seek$lbound,seek$ubound,sep="-"), idx=idx);
+    }  
+    
+    return(seek);
+  }
+  
+  return(FALSE);
+}
+
+db.kegg.getId <- function(seek=NULL)
+{
+  if(is.null(seek) == TRUE)
+  { return(FALSE); }
+  
+  kegg.types <- list(mass = 'exact_mass', 
+                     mol = 'mol_weight', 
+                     formula = 'formula');
+  
+  seek <- db.kegg.getQuery(seek, kegg.types);
+
+  kegg.loc   <- "http://rest.kegg.jp/find";
+  kegg.db    <- "compound";  
+    
+  kegg.url <- paste(kegg.loc, kegg.db, seek$str, kegg.types[seek$idx], sep="/");
+  
+  if (url.exists(kegg.url) == TRUE)
+  { 
     kegg.data <- getURI(kegg.url);
-    
     return(db.kegg.convertString(kegg.data));
   }
   
@@ -53,71 +208,116 @@ db.kegg.convertString <- function(idstring)
   return(kegg.id);
 }
   
-db.kegg.getMoleculeContainer <- function(file=NULL, ids)
+db.kegg.getMoleculeContainer <- function(ids=NULL)
 {
-  if (length(ids) == 0)
+  if (length(ids) == 0 || is.null(ids) == TRUE)
   { return(FALSE); }  
   
-  ids <- paste("cpd:",ids,sep="");
-  
-  kegg.loc  <- "http://rest.kegg.jp";
-  kegg.op   <- 'get';
+  ids           <- paste("cpd:",ids,sep="");
+  kegg.loc      <- "http://rest.kegg.jp";
+  kegg.op       <- 'get';
   kegg.filetype <- 'mol';
-  kegg.id <- paste(ids, collapse="+");        
+  kegg.url      <- NULL;
   
-  kegg.url     <- paste(kegg.loc,kegg.op,kegg.id,kegg.filetype,sep="/"); 
+  kegg.maxsize  <- 10;
+  end           <- 0;
+  part          <- ceiling(length(ids)/kegg.maxsize);
+  succ          <- NULL;
+  vec.success   <- NULL;
+  vec.miss      <- NULL;
   
-  if (missing(file) == TRUE)
+  for (i in 1:part)
   {
-    if (url.exists(kegg.url) == TRUE)
-    { return(load.molecules(kegg.url)); }    
-  }
-  else
-  {
-    download.file(url, file);
+    start <- end + 1;
+    end <- i * kegg.maxsize;
     
-    if (file.exists(file))
-    { return(TRUE); }    
-  }
+    if (end > length(ids))
+    { end <- length(ids); }
+    
+    kegg.ids <- paste(ids[start:end], collapse="+");
+    kegg.url <- paste(kegg.loc, kegg.op, kegg.ids, kegg.filetype, sep="/");
+    
+    #print(paste("Try",kegg.url,sep=" "));
+    x <- try(load.molecules(kegg.url), silent=TRUE);
+
+    if (class(x) != "try-error")
+    { 
+      succ <- c(succ, x);
+      vec.success <- c(vec.success, ids[start:end]);
+    }
+    else
+    {
+      for (j in start:end)
+      {
+        #print(paste("Try single",ids[j],sep=" "));
+        kegg.url <- paste(kegg.loc, kegg.op, ids[j], kegg.filetype, sep="/");
+        x <- try(load.molecules(kegg.url), silent=TRUE);
+        
+        if (class(x) != "try-error")
+        {
+          succ <- c(succ, x);
+          vec.success <- c(vec.success, ids[j]);
+          #print(paste("successfull", ids[j], sep=" "));
+        }
+        else
+        {
+          vec.miss <- c(vec.miss, ids[j]);
+          #print(kegg.url)
+          #print(paste("miss", ids[j], sep=" "));
+        }
+      }
+    }
+  }  
   
-  return(FALSE);
+  print("Successfully:");
+  print(vec.success);
+  print("Missed:");
+  print(vec.miss);
+  
+  return(succ);
 }
 
 #PubChem
-db.pubchem.getId <- function(type=NULL, value=NULL)
-{
+db.pubchem.getId <- function(seek=NULL)
+{  
   pc.loc <- "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?";
   pc.query <- "db=pccompound&term=";
-  pc.type  <- c('formula','mimass','exmass','cid');
+  pc.maxresult <- paste("retmax", 100, sep="=");
   
-  if (any(pc.type == type) == TRUE && missing(value) != TRUE)
+  pc.type  <- list(formula='formula',
+                   mass='exmass',
+                   cid='cid');
+  
+  pc.idx <- db.lib.matchFunc(names(seek), names(pc.type));
+  
+  if (is.null(seek) == TRUE || length(seek) > 2 || is.null(pc.idx) == TRUE )
+  { return(FALSE); }
+  
+  if (is.null(seek$mass) == FALSE)
   {
-    if (type == pc.type[2] || type == pc.type[3])
-    {
-      value <- as.double(value);
-      pc.mass <- paste(100,
-                       "[",toupper(type),"]:",
-                       value,
-                       "[",toupper(type),"]",
-                       sep="");
-    }
-    else if (type == pc.type[4])
-    {
-      pc.mass <- paste("[",toupper(type),"]",
-                       value,
-                       "[",toupper(type),"]",
-                       sep="");      
-    }
-    else
-    { pc.mass <- value; }
+    seek <- db.lib.calcMass(seek);
     
-    pc.url <- paste(pc.loc, pc.query, pc.mass, sep="");
-    
-    pc.data <- getURI(pc.url);
-    return(db.pubchem.XMLToList(pc.data));
+    pc.mass <- paste(seek$lbound,
+                     "[",toupper(pc.type[pc.idx]),"]:",
+                     seek$ubound,
+                     "[",toupper(pc.type[pc.idx]),"]",
+                     sep="");
   }
+  else if (is.null(seek$cid) == FALSE)
+  {
+    pc.mass <- paste("[",toupper(pc.type[pc.idx]),"]",
+                     seek$cid,
+                     "[",toupper(pc.type[pc.idx]),"]",
+                     sep="");      
+  }
+  else
+  { pc.mass <- seek[1]; }
+    
+  pc.url <- paste(pc.loc, pc.query, pc.mass, sep="");
+  pc.url <- paste(pc.url, pc.maxresult, sep="&")
+  pc.data <- getURI(pc.url);
   
-  return(NULL);
+  return(db.pubchem.XMLToList(pc.data));
 }  
 
 db.pubchem.XMLToList <- function(xml)
@@ -133,11 +333,15 @@ db.pubchem.XMLToList <- function(xml)
     return(pc.data);  
   }
   
+  warning(pc.data$WarningList);
   return(NULL);
 }
 
-db.pubchem.getMoleculeContainer <- function(file=NULL, ids)
+db.pubchem.getMoleculeContainer <- function(ids=NULL)
 {
+  if (is.null(ids) == TRUE)
+  { return(FALSE); }
+  
   pc.loc      <- "http://pubchem.ncbi.nlm.nih.gov/rest/pug";
   pc.db       <- "compound"
   pc.type     <- "cid";
@@ -146,20 +350,8 @@ db.pubchem.getMoleculeContainer <- function(file=NULL, ids)
   
   pc.url <- paste(pc.loc,pc.db,pc.type,pc.ids,pc.filetype,sep="/");
   
-  if (missing(file) == TRUE)
-  {
-    if (url.exists(pc.url) == TRUE)
-    {
-      return(load.molecules(pc.url));
-    }    
-  }
-  else
-  {
-    download.file(pc.url, file);
-    
-    if (file.exists(file))
-    { return(TRUE); }    
-  }  
+  if (url.exists(pc.url) == TRUE)
+  { return(load.molecules(pc.url)); }
   
   return(FALSE);
 }
