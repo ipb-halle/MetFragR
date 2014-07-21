@@ -1,23 +1,22 @@
-\name{db.pubchem.MoleculeToFile}
-\alias{db.pubchem.MoleculeToFile}
+\name{db.pubchem.getMoleculeContainer}
+\alias{db.pubchem.getMoleculeContainer}
 \title{
-  Saves SDF-File by PubChem Ids
+  Get AtomContainer by PubChem-IDs
 }
 \description{
-  This function receives data from PubChem by PubChem IDs and save the result
-  in a sdf-file.
+  This function receives data from PubChem by PubChem Entrys and 
+  return IAtomContainer.
 }
 \usage{
   db.pubchem.getMoleculeContainer(ids)
 }
 \arguments{
   \item{ids}{
-    A matrix with one column contains PubChem IDs.
+    A vector with PubChem Entrys.
   }  
 }
 \value{
-  The function returns a boolean whether a file was
-  successfully written.
+  The function returns a list of IAtomContainer.
 }
 \author{
   Adrian Helmchen
@@ -32,9 +31,9 @@
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 %}
 \examples{
-ids <- c("73264919","73264709","73264708");
-mat <- matrix(c(ids),3);
-db.pubchem.getMoleculeContainer(mat);
+params <- list(mass=174.05, range=0.001);
+mol.ids <- db.pubchem.getId(params);
+db.pubchem.getMoleculeContainer(mol.ids);
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

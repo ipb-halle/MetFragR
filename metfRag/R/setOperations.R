@@ -1,14 +1,46 @@
+container.identicalProperties <- function(mol)
+{
+  mol.prop <- get.properties(mol);
+  mol.names <- names(mol.prop);
+  
+  for (i in (1:length(mol.names)))
+  {
+    if ( length(grep("^cdk:.*",mol.names[i])) == 1 )
+    { next; }
+    
+    spl.pc <- strsplit(mol.names[i],split="PUBCHEM_")[[1]][2];
+    spl.kegg <- strsplit(mol.names[i],split="KEGG_")[[1]][2];
+    
+    if (is.na(spl.pc) == FALSE)
+    {     
+      remove.property(mol, mol.names[i]);
+      mol.names[i] <- spl.pc; 
+      set.property(mol, mol.names[i], mol.prop[[i]]);
+    }
+    else if (is.na(spl.kegg) == FALSE)
+    {     
+      remove.property(mol, mol.names[i]);
+      mol.names[i] <- spl.kegg; 
+      set.property(mol, mol.names[i], mol.prop[[i]]);
+    }
+  }
+  
+  return(mol);
+}
+
 container.union <- function(set.a, set.b, link)
-{  
+{    
+  sets <- c(set.a, set.b);
+  sets <- lapply(sets, container.identicalProperties);
+  
   if (missing(link) == TRUE)
   {
-    print(comm.lib.showLinkOptions(set.a));
+    print(comm.lib.showLinkOptions(sets));
     stop("Please choose a link from above. You could use the
          function: comm.lib.showLinkOptions(set)");
   }
   
-  sets <- c(set.a, set.b);
-  double <- lapply(sets, comm.lib.lookup, sets, link);
+  double <- lapply(sets, common.lib.lookup, sets, link);
   result <- c();
   
   for (i in (1:length(double)))
@@ -19,8 +51,10 @@ container.union <- function(set.a, set.b, link)
     }
     else if (length(double[[i]]) > 1)
     {
-      if (i == double[[i]][1])
-      { result <- c(result, sets[double[[i]][i]]); }
+      if (i == double[[i]][1] && is.na(double[[i]][i]) == FALSE)
+      { 
+        result <- c(result, sets[double[[i]][i]]); 
+      }
     }
   }
   
@@ -29,14 +63,17 @@ container.union <- function(set.a, set.b, link)
 
 container.intersect <- function(set.a, set.b, link)
 {  
+  set.a <- lapply(set.a, container.identicalProperties);
+  set.b <- lapply(set.b, container.identicalProperties);
+  
   if (missing(link) == TRUE)
   {
-    print(comm.lib.showLinkOptions(set.a));
+    print(comm.lib.showLinkOptions(c(set.a,set.b)));
     stop("Please choose a link from above. You could use the
          function: comm.lib.showLinkOptions(set)");
   }
   
-  double <- lapply(set.a, comm.lib.lookup, set.b, link);
+  double <- lapply(set.a, common.lib.lookup, set.b, link);
   result <- c();
   g <- 0;
   
@@ -62,9 +99,12 @@ container.intersect <- function(set.a, set.b, link)
 
 container.asymmetric.difference <- function(set.a, set.b, link)
 {
+  set.a <- lapply(set.a, container.identicalProperties);
+  set.b <- lapply(set.b, container.identicalProperties);  
+  
   if (missing(link) == TRUE)
   {
-    print(comm.lib.showLinkOptions(set.a));
+    print(comm.lib.showLinkOptions(c(set.a,set.b)));
     stop("Please choose a link from above. You could use the
          function: comm.lib.showLinkOptions(set)");
   }
@@ -92,9 +132,12 @@ container.asymmetric.difference <- function(set.a, set.b, link)
 
 container.symmetric.difference <- function(set.a, set.b, link)
 {
+  set.a <- lapply(set.a, container.identicalProperties);
+  set.b <- lapply(set.b, container.identicalProperties);  
+  
   if (missing(link) == TRUE)
   {
-    print(comm.lib.showLinkOptions(set.a));
+    print(comm.lib.showLinkOptions(c(set.a,set.b)));
     stop("Please choose a link from above. You could use the
          function: comm.lib.showLinkOptions(set)");
   }

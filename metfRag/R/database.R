@@ -1,40 +1,5 @@
 Sys.setlocale("LC_NUMERIC",'C');
 
-db.search <- function(db=NULL, seek=NULL)
-{
-  if(is.null(db) == TRUE || is.null(seek) == TRUE)
-  { return(FALSE); }
-  
-  database <- c('pubchem', 'kegg');
-  dbInDatabase <- db %in% database;
-  
-  if (any(FALSE == dbInDatabase) == TRUE)
-  { return(FALSE); }
-  
-  container <- NULL;
-  
-  for (i in 1:length(db))
-  {
-    func.getId    <- paste("db",db[i],"getId",sep=".");
-    func.chemFile <- paste("db",db[i],"getMoleculeContainer",sep=".");
-    
-    db.ids <- do.call(func.getId, list(seek));
-    
-    if (is.null(db.ids) == FALSE && is.na(db.ids[1]) == FALSE)
-    {
-      container <- c(container, do.call(func.chemFile, list(db.ids)));    
-    }
-    else
-    {
-      str <- paste("For database ",db[i]," was no entry found. 
-                  Maybe your range should be increase.",sep="'");
-      warning(str);
-    }
-  }
-  
-  return(container);
-}
-
 #Library
 db.lib.matchFunc <- function(names.seek, names.func)
 {
@@ -57,17 +22,20 @@ db.lib.matchFunc <- function(names.seek, names.func)
 
 db.lib.calcMass <- function(seek)
 {
-  seek$mass <- as.double(seek$mass);
+  value <- as.double(seek[1]);
   
-  if (is.null(seek$range) == FALSE)
+  if (is.null(seek[2]) == FALSE)
   {
-    seek$range <- as.double(seek$range);
+    range <- as.double(seek[2]);
   }
   else
-  { seek$range <- as.double(0); }
-  
-  seek = list(lbound=(seek$mass - seek$range),
-              ubound=(seek$mass + seek$range));
+  { range <- as.double(0); }
+   
+  seek <- list(
+    val = value,
+    lbound=(value - range),
+    ubound=(value + range)
+  );
   
   return(seek);
 }
@@ -158,6 +126,11 @@ db.kegg.getQuery <- function(seek, types)
       seek <- db.lib.calcMass(seek);
       seek <- list(str=paste(seek$lbound,seek$ubound,sep="-"), idx=idx);
     }  
+    else if (is.null(seek$mw) == FALSE)
+    {
+      seek <- db.lib.calcMass(seek);
+      seek <- list(str=paste(seek$lbound,seek$ubound,sep="-"), idx=idx);      
+    }
     
     return(seek);
   }
@@ -171,7 +144,7 @@ db.kegg.getId <- function(seek=NULL)
   { return(FALSE); }
   
   kegg.types <- list(mass = 'exact_mass', 
-                     mol = 'mol_weight', 
+                     mw = 'mol_weight', 
                      formula = 'formula');
   
   seek <- db.kegg.getQuery(seek, kegg.types);
@@ -207,8 +180,45 @@ db.kegg.convertString <- function(idstring)
   colnames(kegg.id) <- 'CPD';
   return(kegg.id);
 }
+
+db.kegg.annotateMolecule <- function(container, id)
+{  
+  file <- keggGet(dbentries=c(id));
+  skip.properties <- c("BOND", "ATOM", "BRITE", "ENZYME" ,"DBLINKS", 
+                       "COMMENT");
   
-db.kegg.getMoleculeContainer <- function(ids=NULL)
+  for (i in ( 1:length(names(file[[1]])) ))
+  {
+    mol.name <- names(file[[1]][i]);
+    mol.value <- file[[1]][[i]];
+    
+    if (mol.name == "ENTRY")
+    { mol.value <- strsplit(mol.value, split="\n")$Compound; }
+    else if (any(mol.name == skip.properties) == TRUE)
+    { next; }
+    else if(any(mol.name == c("REACTION","NAME")) == TRUE)
+    { mol.value <- paste(mol.value, collapse=" "); }
+    else if(mol.name == "PATHWAY")
+    {
+      for (j in (1:length(file[[1]]$PATHWAY)))
+      {
+        mol.name <- paste("KEGG", "PATHWAY", 
+                          names(file[[1]]$PATHWAY[j]), sep="_");
+        mol.val <- file[[1]]$PATHWAY[[j]];
+        set.property(container, mol.name, mol.val);
+      }
+      
+      next;
+    }
+      
+    mol.name <- paste("KEGG", names(file[[1]][i]), sep="_");
+    set.property(container, mol.name, mol.value);
+  }
+  
+  return(container);
+}
+
+db.kegg.getMoleculeContainer<- function(ids=NULL)
 {
   if (length(ids) == 0 || is.null(ids) == TRUE)
   { return(FALSE); }  
@@ -219,62 +229,20 @@ db.kegg.getMoleculeContainer <- function(ids=NULL)
   kegg.filetype <- 'mol';
   kegg.url      <- NULL;
   
-  kegg.maxsize  <- 10;
-  end           <- 0;
-  part          <- ceiling(length(ids)/kegg.maxsize);
-  succ          <- NULL;
-  vec.success   <- NULL;
-  vec.miss      <- NULL;
+  kegg.url <- sapply(
+    ids,
+    function(id, type, loc, op) 
+      paste(loc, op, id, type, sep="/"),
+    kegg.filetype,
+    kegg.loc,
+    kegg.op
+  )
   
-  for (i in 1:part)
-  {
-    start <- end + 1;
-    end <- i * kegg.maxsize;
-    
-    if (end > length(ids))
-    { end <- length(ids); }
-    
-    kegg.ids <- paste(ids[start:end], collapse="+");
-    kegg.url <- paste(kegg.loc, kegg.op, kegg.ids, kegg.filetype, sep="/");
-    
-    #print(paste("Try",kegg.url,sep=" "));
-    x <- try(load.molecules(kegg.url), silent=TRUE);
-
-    if (class(x) != "try-error")
-    { 
-      succ <- c(succ, x);
-      vec.success <- c(vec.success, ids[start:end]);
-    }
-    else
-    {
-      for (j in start:end)
-      {
-        #print(paste("Try single",ids[j],sep=" "));
-        kegg.url <- paste(kegg.loc, kegg.op, ids[j], kegg.filetype, sep="/");
-        x <- try(load.molecules(kegg.url), silent=TRUE);
-        
-        if (class(x) != "try-error")
-        {
-          succ <- c(succ, x);
-          vec.success <- c(vec.success, ids[j]);
-          #print(paste("successfull", ids[j], sep=" "));
-        }
-        else
-        {
-          vec.miss <- c(vec.miss, ids[j]);
-          #print(kegg.url)
-          #print(paste("miss", ids[j], sep=" "));
-        }
-      }
-    }
-  }  
+  molecules <- sapply(kegg.url, load.molecules);
+  molecules <- mapply(db.kegg.annotateMolecule, molecules, names(molecules));
+  names(molecules) <- NULL;
   
-  print("Successfully:");
-  print(vec.success);
-  print("Missed:");
-  print(vec.miss);
-  
-  return(succ);
+  return(molecules);
 }
 
 #PubChem

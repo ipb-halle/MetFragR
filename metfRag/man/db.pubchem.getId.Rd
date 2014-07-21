@@ -1,21 +1,19 @@
-\name{db.kegg.getId}
-\alias{db.kegg.getId}
+\name{db.pubchem.getId}
+\alias{db.pubchem.getId}
 \title{
   Get Compound ID from PubChem
 }
 \description{
-  This function returns a PubChem Compound ID by exact mass, 
-  monoisotopic mass, formula or name.
+  This function returns a PubChem Compound ID by exact mass, formula or id.
 }
 \usage{
-  db.kegg.getId(seek)
+  db.pubchem.getId(seek)
 }
 \arguments{
   \item{seek}{
-    The search value for a specified database. Both, the exact mass 
-    and the monoisotopic mass should be numeric and the other types 
-    are characters. 
-  }  
+    A list describes the available search methods.
+    The methods are 'exact_mass', 'formula' and 'cid'.
+  }
 }
 \value{
   PubChem IDs are returned.
@@ -37,6 +35,9 @@ params <- list(mass=174.05, range=0);
 db.pubchem.getId(params);
 
 params <- list(formula='H2O');
+db.pubchem.getId(params);
+
+params <- list(cid="23332137");
 db.pubchem.getId(params);
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

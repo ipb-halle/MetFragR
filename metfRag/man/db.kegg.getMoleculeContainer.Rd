@@ -1,24 +1,22 @@
 \name{db.kegg.getMoleculeContainer}
 \alias{db.kegg.getMoleculeContainer}
 \title{
-  Saves Mol-File by KEGG C Numbers
+  Get AtomContainer by KEGG-IDs
 }
 \description{
   This function receives data from KEGG by KEGG Entrys and 
-  either write the result in a mol-file or return
-  an IAtomContainer.
+  return IAtomContainer.
 }
 \usage{
   db.kegg.getMoleculeContainer(ids)
 }
 \arguments{
   \item{ids}{
-    A matrix with one column contains KEGG Entrys.
+    A vector with KEGG Entrys.
   }  
 }
 \value{
-  The function returns either a boolean whether a file was
-  successfully written or a list of IAtomContainer.
+  The function returns a list of IAtomContainer.
 }
 \author{
   Adrian Helmchen
@@ -33,9 +31,9 @@
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 %}
 \examples{
-ids <- c("C00493","C04236","C16588");
-mat <- matrix(c(ids),3);
-db.kegg.getMoleculeContainer(mat);
+params <- list(mass=174.05, range=0.001);
+mol.ids <- db.kegg.getId(params);
+db.kegg.getMoleculeContainer(mol.ids);
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

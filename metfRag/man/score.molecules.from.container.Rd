@@ -1,14 +1,14 @@
-\name{score.molecules.from.sdf}
-\alias{score.molecules.from.sdf}
+\name{score.molecules.from.container}
+\alias{score.molecules.from.container}
 \title{Calculate MetFrag scores for molecules and a given tandem mass spectrum}
 \usage{
-  score.molecules.from.sdf(sdf, mzs, ints, exact.mass,
+  score.molecules.from.container(container, mzs, ints, exact.mass,
     number.threads = 1, mz.abs = 0.01, mz.ppm = 10,
-    search.ppm = 10, pos.charge = TRUE, mode = 1,
-    tree.depth = 2)
+    pos.charge = TRUE, mode = 1, tree.depth = 2)
 }
 \arguments{
-  \item{sdf}{A \code{list} of IAtomContainern}
+  \item{container}{The name of the SD file containing candidate
+  molecules}
 
   \item{mzs}{A \code{vector} mass to charge ratio values}
 
@@ -25,9 +25,6 @@
 
   \item{mz.ppm}{Relative mass deviation (ppm) allowed to
   match theoretical fragment massed to the given mz values}
-
-  \item{search.ppm}{The relative mass deviation (ppm) from
-  \code{exact.mass} for candidate molecules in \code{sdf}}
 
   \item{pos.charge}{If \code{TRUE} the given tandem mass
   spectrum is assumed to be measured in positive mode}
@@ -48,4 +45,3 @@
 \author{
   Christoph Ruttkies (\email{cruttkie@ipb-halle.de})
 }
-
