@@ -1,6 +1,8 @@
 common.lib.findMolecule <- function(mol, property, seek.value, split=NULL)
 {
   mol.value <- get.property(mol, property);
+  #stuff <- names(get.properties(mol));
+  #stop(stuff)
   
   if (is.null(split) == TRUE && mol.value == seek.value)
   {
@@ -21,7 +23,6 @@ common.lib.findMolecule <- function(mol, property, seek.value, split=NULL)
 
 common.lib.lookup <- function(needle, haystack, link, split=NULL)
 {
-  
   if (missing(needle) == TRUE || 
       missing(haystack) == TRUE || 
       length(haystack) == 0)
@@ -75,20 +76,31 @@ common.lib.lookupFirst <- function(needle, haystack, link)
   return(FALSE);
 }
 
-comm.lib.showLinkOptions <- function(set)
+lib.CommonSet <- function(set)
 {
-  if (missing(set) == TRUE)
+  set.result <- c();
+  
+  for (i in 1:length(set))
+  { set.result <- c(set.result, names(set[[i]])); }
+
+  set.result <- intersect(set.result, set.result);
+
+  return(set.result);
+}
+
+comm.lib.showLinkOptions <- function(set.a, set.b)
+{
+  if (missing(set.a) == TRUE || missing(set.b) == TRUE)
   { return(FALSE); }
   
-  set.prop <- lapply(set, get.properties);
-  set.inter <- names(set.prop[[1]]);
+  set.a.prop <- sapply(set.a, get.properties);
+  set.b.prop <- sapply(set.b, get.properties);
   
-  for (i in (1:length(set.prop)))
-  { print(set.inter)
-    print(names(set.prop[[i]]))
-    print(" ")
-    set.inter <- intersect(set.inter, names(set.prop[[i]])) }
-  
+  set.inter <- intersect(
+    lib.CommonSet(set.a.prop),
+    lib.CommonSet(set.b.prop)
+  );
+    
   return(set.inter);
 }
 
@@ -97,7 +109,7 @@ comm.lib.showNumberOptions <- function(set)
   if (missing(set) == TRUE)
   { return(FALSE); }
   
-  keys <- comm.lib.showLinkOptions(set);  
+  keys <- comm.lib.showLinkOptions(set,set);
   name <- c();
   
   for (i in (1:length(keys)))

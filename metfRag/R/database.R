@@ -236,11 +236,12 @@ db.kegg.getMoleculeContainer<- function(ids=NULL)
     kegg.filetype,
     kegg.loc,
     kegg.op
-  )
+  );
   
   molecules <- sapply(kegg.url, load.molecules);
   molecules <- mapply(db.kegg.annotateMolecule, molecules, names(molecules));
   names(molecules) <- NULL;
+  molecules <- lapply(molecules, container.identicalProperties);
   
   return(molecules);
 }
@@ -319,7 +320,11 @@ db.pubchem.getMoleculeContainer <- function(ids=NULL)
   pc.url <- paste(pc.loc,pc.db,pc.type,pc.ids,pc.filetype,sep="/");
   
   if (url.exists(pc.url) == TRUE)
-  { return(load.molecules(pc.url)); }
+  { 
+    molecules <- load.molecules(pc.url);
+    molecules <- lapply(molecules, container.identicalProperties);
+    return(molecules); 
+  }
   
   return(FALSE);
 }

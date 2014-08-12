@@ -5,9 +5,36 @@
 % \VignetteIndexEntry{Metabolite Identification with MetFrag in R}
 % \VignetteKeywords{mass spectrometry, tandemms, metabolite identification}
 % \VignettePackage{metfRag}
-\documentclass[12pt]{article}
+\documentclass[12pt, a4paper]{scrartcl}
 
+%Neue Pakete
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{natbib}
 \usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{pdfpages}
+\usepackage{xcolor}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\usepackage{tikz}
+\usetikzlibrary{positioning,shapes,backgrounds}
+
+\usepackage[a4paper,left=5cm,right=1cm,top=2cm,bottom=2cm]{geometry}
+\usepackage{fullpage}
+\setlength{\headsep}{1em}
+\setlength{\parindent}{0em}
+\setlength{\headheight}{13.87178pt}
+
+\renewcaptionname{ngerman}{\contentsname}{Table of Contents}
+\renewcaptionname{ngerman}{\listfigurename}{Figures}
+\renewcaptionname{ngerman}{\listtablename}{Tables}
+\renewcaptionname{ngerman}{\figurename}{Figure}
+\renewcaptionname{ngerman}{\tablename}{Table}
 
 \newcommand{\Robject}[1]{{\texttt{#1}}}
 \newcommand{\Rfunction}[1]{{\texttt{#1}}}
@@ -16,133 +43,249 @@
 \newcommand{\Rmethod}[1]{{\textit{#1}}}
 \newcommand{\Rfunarg}[1]{{\textit{#1}}}
 
-\textwidth=6.2in
-\textheight=8.5in
-%\parskip=.3cm
-\oddsidemargin=.1in
-\evensidemargin=.1in
-\headheight=-.3in
-
 \begin{document}
-\SweaveOpts{concordance=TRUE}
+%\SweaveOpts{concordance=TRUE}
 \title{Metabolite Identification with MetFrag in R}
-\author{C. Ruttkies, S. Neumann}
+\author{C. Ruttkies, S. Neumann, A. Helmchen}
 \maketitle
 
-\section*{Introduction}
+\newpage
+\tableofcontents
+
+\newpage
+\section{Introduction}
 
 This document describes how to use \Rpackage{metfRag}.
 
-<<LibraryPreloade>>=
+<<LibraryPreloade,warning=FALSE,message=FALSE>>=
 library(rcdk)
 library(metfRag)
 @
 
+\newpage
 \section{Structure file preparation}
 
 The included SDF is the result of MetFusion processing 
 of the MS/MS spectrum of the CASMI 2014 challenge 5.
 
-<<loadStructures>>=
-sdfile <- system.file("sdf/metfusion-category2-Challenge5-pubchem.sdf", package = "metfRag")
+<<loadStructures,warning=FALSE,message=FALSE>>=
+file <- "sdf/metfusion-category2-Challenge5-pubchem.sdf"
+sdfile <- system.file(file, package = "metfRag")
 mols <- load.molecules(sdfile)
 @
 
-\section{Scoring strcutures with MetFrag}
+\section{Scoring structures with MetFrag}
 
-<<scoreMetfrag>>=
-queryfile <- system.file("sdf/metfusion-category2-Challenge5.mf", package = "metfRag")
-challenge5 <- read.table(queryfile, sep="\t", col.names=c("mz", "inten"))
+<<scoreMetfrag,warning=FALSE,message=FALSE>>=
+file <- "sdf/metfusion-category2-Challenge5.mf"
+queryfile <- system.file(file, package = "metfRag")
+challenge5 <- read.table(queryfile, 
+                         sep="\t", 
+                         col.names=c("mz", "inten"))
 
-# Disabled, due to problems with newest rCDK:
-#scoredMols <- score.molecules.from.sdf(sdfile, mzs=challenge5[,"mz"], ints=challenge5[,"mz"], 
-#                                   exact.mass=290.0646, 
-#                                   mz.abs=0.001, mz.ppm=5, search.ppm=5, pos.charge=TRUE, mode=1, tree.depth=2)
-
+#Disabled, due to problems with newest rCDK:
+#scoredMols <- score.molecules.from.sdf(sdfile, 
+#                                       mzs=challenge5[,"mz"], 
+#                                       ints=challenge5[,"mz"], 
+#                                       exact.mass=290.0646, 
+#                                       mz.abs=0.001, 
+#                                       mz.ppm=5, 
+#                                       search.ppm=5, 
+#                                       pos.charge=TRUE, 
+#                                       mode=1, 
+#                                       tree.depth=2)
 scoredMols <- mols
 @
 
+\section{Materials and Methods}
+In this section the possible tasks shall described and which functions
+are available to process compounds. By means of an example 
+the functionality of this MetFragR package are appreciably.
+\subsection*{Getting molecules from a database}
+First, we need some molecules. To get this, we send a query to available 
+databases KEGG or PubChem. Additionally, PubChem process many more parameters
+but the MetFragR package implements id to verify whether the molecule exists
+in this database. KEGG uses three parameters whereby mol weight belongs to the database. Let us view some examples for PubChem to get some molecules but the same 
+could applied for KEGG:
+<<getKeggMolecule>>=
+params <- list(mass=174.05, range=0.001);
+pubchem.mol <- db.pubchem.getId(params)[1:5,];
+pubchem.mol[1:5]
+@
+Each of the result are converted to a IAtomContainer which are described in the manual from rcdk [rcdk]. All container possess properties which you could change. If you send a request and PubChem delivers the associated molecules, PubChem add specific properties like IUPAC name. 
+These informations are necessary to further process the molecules like set operations.
+<<molInfo>>=
+  pubchem.container <- db.pubchem.getMoleculeContainer(pubchem.mol)
+  get.properties(pubchem.container[[1]])[1:5]
+@
 
+\subsection*{Union, intersect or build difference of molecules}
+To do set operations on IAtomContainers the container lists were passed as 
+two lists. The operation occurs by using molecule properties which are 
+equal in both container lists. Hence, the database prefix from each 
+molecule property was removed. To adept the equal properties we could
+omit the third link parameter or we call the function \emph{showLinkOptions}.
+<<showOptions>>=
+  opt <- container.union(pubchem.container,pubchem.container)
+@
+This show us the possible links of both container. To union the both sets
+we could call \emph{container.union} and \emph{container.intersect} to intersect
+two container sets.
+<<unionIntersect, eval=FALSE>>=
+  container.union(pubchem.container, 
+                  pubchem.container, 
+                  "MOLECULAR_FORMULA")
+
+  container.intersect(pubchem.container, 
+                      pubchem.container, 
+                      "MOLECULAR_FORMULA")
+@
+Then, the molecule property from set \(A\) was compared with each
+molecule property from set \(B\). The double occurence of the 
+elements are filtered. \\[0.5em]
+If we would like to build the symmetric difference or asymmetric difference
+we could call \emph{container.symmetric.difference} and 
+\emph{container.asymmetric.difference}. 
+<<a_symmetric, eval=FALSE>>=
+  container.symmetric.difference(pubchem.container, 
+                                 pubchem.container, 
+                                 "MOLECULAR_FORMULA")
+
+  container.asymmetric.difference(pubchem.container, 
+                                 pubchem.container, 
+                                 "MOLECULAR_FORMULA")
+@
+We could search molecules with equal properties by call the function 
+\emph{common.lib.lookup} or whether molecules with equal properties 
+occur in a set of containers. 
+For this purpose we indicate a parameter to split the property values: 
+For example we would like to fetch a molecule with the property 'IUPAC\_INCHIKEY' 
+but we need only the first part. Then a delimiter and the position of a 
+fragment are necessary.
+<<lookupMolecule, eval=FALSE>>=
+  split <- list(sep="-", pos=1)
+  common.lib.lookup(pubchem.container[[1]], 
+                    pubchem.container,
+                    "IUPAC_INCHIKEY",
+                    split)
+@
+\subsection*{Illustrate fragments after Scoring by MetFrag}
+
+\subsection*{Rank molecules among a given function or IAtomContainer properties}
+If we would like to rank given molcules we need to specify the ranking parameters.
+Accordingly, it was introduce BC (Candidates with a better score), WC (Candiates
+with worse score), EC (Candiates with equal score) and TC (all Candidates).
+For example we have a list with molecules. These molecules should be ranked 
+by molecule properties we need all available numeric properties.
+<<getNumericProperties, eval=FALSE>>=
+  comm.lib.showNumberOptions(pubchem.container)
+@
+If you call the ranking function without property the output is the same.
+With this possible properties we ranking our molecules and would like to know
+the optimistic (OR), the pessimistic rank (PR) and the relative rank (RRP) of each molecule.
+\begin{align*}
+  RP &= BC + EC + 1 \\
+  RO &= BC + 1 \\
+  RRP &= 0.5 \cdot \frac{1-(BC-WC)}{TC-1}
+\end{align*}
+%Erklärung zu den Scores
+By \emph{scoring.getRanks} the molecules were ordered by given numeric properties.
+%TODO Aenderung des Preprocessings der Properties
+<<scoring, eval=TRUE>>=
+  mzs <- c(119.051,123.044,147.044,153.019,179.036,
+           189.058,273.076,274.083);
+  ints <-c(467.616,370.662,6078.145,10000.0,141.192,
+           176.358,10000.000,318.003)
+  pubchem.container <- score.molecules.from.container(
+    pubchem.container,
+    mzs,
+    ints,
+    272.06847)
+
+  sorting <- list("PeakScore","Score")
+  condition <- list(IUPAC_INCHIKEY="PAFJIHSCEHOAMQ-UHFFFAOYSA-N")
+  scoring.getRanks(pubchem.container, sorting, condition)
+@
+Additionally, we could rank by a specific function. Hence, we declare a list.
+Firstly, this contains a list of parameters which are available. Secondly, 
+the function which use this parameter for own calculations.
+<<scoringFunc, eval=TRUE>>=
+  scoring.getRanks(pubchem.container,
+                   list("PeakScore",
+                        "Score",
+                        list("Score", function(x) x*20)),
+                   list(IUPAC_INCHIKEY="PAFJIHSCEHOAMQ"),
+                   list(sep="-", pos=1))
+@
+
+\newpage
 \section{Visualisation of Results}
-
 First, check the score distribution:
 
-<<plotScores, fig=TRUE, eps=FALSE>>=
+<<plotScores, fig=TRUE, eps=FALSE,warning=FALSE,message=FALSE>>=
 scores <- getScores(scoredMols, scoreprop="Score")
 scores <- getScores(scoredMols, scoreprop="newscore")
 
 plot(scores)
 @
 
-
+\newpage
 Then, calculate clusters:
 
-<<calcCluster>>=
-
+<<calcCluster,warning=FALSE,message=FALSE>>=
 scoredMols <- scoredMols[1:min(50, length(scoredMols))]
-cluster <- hclust.mols(mols=scoredMols, scoreprop="Score", idprop="DatabaseID")
+cluster <- hclust.mols(mols=scoredMols, 
+                       scoreprop="Score", 
+                       idprop="DatabaseID")
 @
 
 and plot as dendrogram, with cluster numbers overlaid,
 
-<<plotNumberedDendrogram, fig=TRUE, eps=FALSE>>=
+<<plotNumberedDendrogram, fig=TRUE, fig.width=5,fig.height=5,fig.align='center',eps=FALSE,warning=FALSE,message=FALSE>>=
 plot(cluster, hang=-1)
 myimages.clustNumbers(cluster, k=7, which=1:7, border=2)
 
 clusterreps <- getClusterMCSS(cluster, mols=scoredMols, k=7, which=1:7)
 @
 
-so that you can later plot the MCSS separately, with an overlay of the clusternumber:
+\newpage
+so that you can later plot the MCSS separately, with an overlay of the 
+clusternumber:
 
-<<plotClusterReps1, fig=TRUE, include = FALSE, eps=FALSE>>=
+<<plotClusterReps, fig=TRUE, include = FALSE, eps=FALSE,warning=FALSE,message=FALSE>>=
   plotMol(clusterreps[[1]], watermark=1)
-@
-
-<<plotClusterReps2, fig=TRUE, include = FALSE, eps=FALSE>>=
   plotMol(clusterreps[[2]], watermark=2)
-@
-
-<<plotClusterReps3, fig=TRUE, include = FALSE, eps=FALSE>>=
   plotMol(clusterreps[[3]], watermark=3)
-@
-
-<<plotClusterReps4, fig=TRUE, include = FALSE, eps=FALSE>>=
   plotMol(clusterreps[[4]], watermark=4)
-@
-
-<<plotClusterReps5, fig=TRUE, include = FALSE, eps=FALSE>>=
   plotMol(clusterreps[[5]], watermark=5)
-@
-
-<<plotClusterReps6, fig=TRUE, include = FALSE, eps=FALSE>>=
   plotMol(clusterreps[[6]], watermark=6)
-@
-
-<<plotClusterReps7, fig=TRUE, include = FALSE, eps=FALSE>>=
   plotMol(clusterreps[[7]], watermark=7)
 @
 
-\begin{figure}
-\includegraphics[width=0.32\textwidth]{"metfRag-plotClusterReps1"}%
-\includegraphics[width=0.32\textwidth]{"metfRag-plotClusterReps2"}%
-\includegraphics[width=0.32\textwidth]{"metfRag-plotClusterReps3"}
-\includegraphics[width=0.32\textwidth]{"metfRag-plotClusterReps4"}%
-\includegraphics[width=0.32\textwidth]{"metfRag-plotClusterReps5"}%
-\includegraphics[width=0.32\textwidth]{"metfRag-plotClusterReps6"}
-\includegraphics[width=0.32\textwidth]{"metfRag-plotClusterReps7"}
+\setkeys{Gin}{width=0.3\textwidth}
+\begin{figure}[h!]
+\includegraphics[width=0.32\textwidth,page=1]{metfRag-plotClusterReps.pdf}%
+\includegraphics[width=0.32\textwidth,page=2]{metfRag-plotClusterReps.pdf}%
+\includegraphics[width=0.32\textwidth,page=3]{metfRag-plotClusterReps.pdf}
+\includegraphics[width=0.32\textwidth,page=4]{metfRag-plotClusterReps.pdf}%
+\includegraphics[width=0.32\textwidth,page=5]{metfRag-plotClusterReps.pdf}%
+\includegraphics[width=0.32\textwidth,page=6]{metfRag-plotClusterReps.pdf}
+\includegraphics[width=0.32\textwidth,page=7]{metfRag-plotClusterReps.pdf}
 \caption{The seven cluster representatives}
 \end{figure}
+\setkeys{Gin}{width=0.8\textwidth}
 
+\newpage
 and plot as dendrogram, with MCSS overlaid:
 
-<<plotMCSSDendrogram, fig=TRUE, eps=FALSE>>=
+<<plotMCSSDendrogram, fig=TRUE, fig.width=5,fig.height=5,fig.align='center',eps=FALSE, warning=FALSE, message=FALSE>>=
 plot(cluster, hang=-1)
 myimages.hclust(cluster, mols=scoredMols, k=7, which=1:7, border=2)
 @
 
 Or include the scores:
 
-<<plotScoredDendrogram, fig=TRUE, eps=FALSE>>=
+<<plotScoredDendrogram, fig=TRUE, eps=FALSE,warning=FALSE,message=FALSE>>=
 #plotCluster(scoredMols, score="Score", h=0.2)
 plotCluster(scoredMols, score="Score", h=0.2, scoreprop="newscore")
 @

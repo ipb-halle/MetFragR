@@ -35,6 +35,16 @@ scoring.sortRangOrder <- function(molMatrix)
   return(mol.columns);
 }
 
+is.integer0 <- function(val)
+{
+  if (is.integer(val) == TRUE && length(val) == 0L)
+  {
+    return(TRUE);
+  }
+  
+  return(FALSE);
+}
+
 scoring.orderContainer <- function(sorting, mols)
 {
   molprop <- c();
@@ -42,12 +52,20 @@ scoring.orderContainer <- function(sorting, mols)
   sort.types  <- sapply(sorting, class);
   pos.list    <- which(sort.types=='list');
   pos.char    <- which(sort.types=='character');
+  col.list    <- NULL;
+  col.char    <- NULL;
   
-  col.char <- sapply(sorting[pos.char],scoring.getMolValues, mols);
-  colnames(col.char) <- pos.char;
+  if (is.integer0(pos.char) == FALSE)
+  {
+    col.char <- sapply(sorting[pos.char], scoring.getMolValues, mols);
+    colnames(col.char) <- pos.char;    
+  }
   
-  col.list <- sapply(sorting[pos.list],scoring.applyFunc, mols);
-  colnames(col.list) <- pos.list;
+  if (is.integer0(pos.list) == FALSE)
+  {
+    col.list <- sapply(sorting[pos.list], scoring.applyFunc, mols);
+    colnames(col.list) <- pos.list;
+  }
   
   mol.list <- cbind(col.char, col.list);
   mol.list <- as.data.frame(scoring.sortRangOrder(mol.list));
@@ -107,24 +125,28 @@ scoring.getRanks <- function(mols, sorting, condition, split=NULL)
   if (missing(sorting) == TRUE)
   {
     print(comm.lib.showNumberOptions(mols));
-    stop("Please choose a sorting method from above. You could use the
+    warning("Please choose a sorting method from above. You could use the
          function: comm.lib.showNumberOptions(set)");
+    return(FALSE);
   }
   
   if (missing(condition) == TRUE)
   {
     print(comm.lib.showLinkOptions(mols));
-    stop("Please choose a link from above. You could use the
+    warning("Please choose a link from above. You could use the
          function: comm.lib.showLinkOptions(set)");
+    return(FALSE);
   }
   
   orderedContainer  <- scoring.orderContainer(sorting, mols);
-  mol.pos           <- sapply(mols, common.lib.findMolecule, 
-                              names(condition), condition[[1]], split);
-  mol.pos           <- which(mol.pos==TRUE);
-  pos.rows          <- match(mol.pos, as.numeric(rownames(orderedContainer)));
   
-  rank <- mapply(scoring.calcMolParameter, pos.rows, mol.pos, 
-                 MoreArgs=list(orderedContainer));
-  return(rank);
+  mol.pos <- sapply(mols, common.lib.findMolecule, 
+                    names(condition), condition[[1]], split);
+  
+  #mol.pos           <- which(mol.pos==TRUE);
+  #pos.rows          <- match(mol.pos, as.numeric(rownames(orderedContainer)));
+  
+  #rank <- mapply(scoring.calcMolParameter, pos.rows, mol.pos, 
+  #               MoreArgs=list(orderedContainer));
+  #return(orderedContainer);
 }

@@ -31,15 +31,16 @@ container.identicalProperties <- function(mol)
 container.union <- function(set.a, set.b, link)
 {    
   sets <- c(set.a, set.b);
-  sets <- lapply(sets, container.identicalProperties);
   
   if (missing(link) == TRUE)
   {
-    print(comm.lib.showLinkOptions(sets));
-    stop("Please choose a link from above. You could use the
-         function: comm.lib.showLinkOptions(set)");
+    print(comm.lib.showLinkOptions(sets,sets));
+    warning("Please choose a link from above. You could use the
+         function: comm.lib.showLinkOptions(set.a,set.b)");
+    return(FALSE);
   }
   
+  link <- toupper(link);
   double <- lapply(sets, common.lib.lookup, sets, link);
   result <- c();
   
@@ -62,17 +63,16 @@ container.union <- function(set.a, set.b, link)
 }
 
 container.intersect <- function(set.a, set.b, link)
-{  
-  set.a <- lapply(set.a, container.identicalProperties);
-  set.b <- lapply(set.b, container.identicalProperties);
-  
+{   
   if (missing(link) == TRUE)
   {
-    print(comm.lib.showLinkOptions(c(set.a,set.b)));
-    stop("Please choose a link from above. You could use the
-         function: comm.lib.showLinkOptions(set)");
+    print(comm.lib.showLinkOptions(set.a,set.b));
+    warning("Please choose a link from above. You could use the
+         function: comm.lib.showLinkOptions(set.a,set.b)");
+    return(FALSE);
   }
   
+  link <- toupper(link);
   double <- lapply(set.a, common.lib.lookup, set.b, link);
   result <- c();
   g <- 0;
@@ -98,17 +98,16 @@ container.intersect <- function(set.a, set.b, link)
 }
 
 container.asymmetric.difference <- function(set.a, set.b, link)
-{
-  set.a <- lapply(set.a, container.identicalProperties);
-  set.b <- lapply(set.b, container.identicalProperties);  
-  
+{  
   if (missing(link) == TRUE)
   {
-    print(comm.lib.showLinkOptions(c(set.a,set.b)));
-    stop("Please choose a link from above. You could use the
-         function: comm.lib.showLinkOptions(set)");
+    print(comm.lib.showLinkOptions(set.a,set.b));
+    warning("Please choose a link from above. You could use the
+         function: comm.lib.showLinkOptions(set.a,set.b)");
+    return(FALSE);
   }
   
+  link <- toupper(link);
   double <- lapply(set.a, common.lib.lookupFirst, set.b, link);
   result <- c();
   
@@ -131,17 +130,16 @@ container.asymmetric.difference <- function(set.a, set.b, link)
 }
 
 container.symmetric.difference <- function(set.a, set.b, link)
-{
-  set.a <- lapply(set.a, container.identicalProperties);
-  set.b <- lapply(set.b, container.identicalProperties);  
-  
+{  
   if (missing(link) == TRUE)
   {
-    print(comm.lib.showLinkOptions(c(set.a,set.b)));
-    stop("Please choose a link from above. You could use the
-         function: comm.lib.showLinkOptions(set)");
+    print(comm.lib.showLinkOptions(set.a,set.b));
+    warning("Please choose a link from above. You could use the
+         function: comm.lib.showLinkOptions(set.a,set.b)");
+    return(FALSE);
   }
   
+  link <- toupper(link);
   result <- c();
   result <- c(result, container.asymmetric.difference(set.a, set.b, link));
   result <- c(result, container.asymmetric.difference(set.b, set.a, link));

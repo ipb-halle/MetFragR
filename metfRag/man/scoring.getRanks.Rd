@@ -66,7 +66,7 @@ mols.pc <- score.molecules.from.container(mols.pc, mzs, ints, 272.06847)
 
 #rank given molecule
 params <- list('Score', list('Score', function(x) x * 5), 'PeakScore')
-condition <- list(PUBCHEM_IUPAC_INCHIKEY="YOGIRYKSHRZUBS")
+condition <- list(IUPAC_INCHIKEY="YOGIRYKSHRZUBS")
 scoring.getRanks(mols.pc, params, condition, list(sep="-", pos=1))
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
