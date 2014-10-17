@@ -143,10 +143,10 @@ scoring.getRanks <- function(mols, sorting, condition, split=NULL)
   mol.pos <- sapply(mols, common.lib.findMolecule, 
                     names(condition), condition[[1]], split);
   
-  #mol.pos           <- which(mol.pos==TRUE);
-  #pos.rows          <- match(mol.pos, as.numeric(rownames(orderedContainer)));
+  mol.pos           <- which(mol.pos==TRUE);
+  pos.rows          <- match(mol.pos, as.numeric(rownames(orderedContainer)));
   
-  #rank <- mapply(scoring.calcMolParameter, pos.rows, mol.pos, 
-  #               MoreArgs=list(orderedContainer));
-  #return(orderedContainer);
+  rank <- mapply(scoring.calcMolParameter, pos.rows, mol.pos, 
+                 MoreArgs=list(orderedContainer));
+  return(rank);
 }

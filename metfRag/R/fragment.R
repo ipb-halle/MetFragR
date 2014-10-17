@@ -1,14 +1,14 @@
-frag.loadFragmenter <- function(frag.path="C:/Users/Adrian Helmchen/Documents/MetFrag/lib/")
-{
+frag.loadFragmenter <- function(frag.path)
+{  
   .jaddClassPath(frag.path);
   fobj <- new(J("de/ipbhalle/metfrag/fragmenter/Fragmenter"), F, T, F);
   
   return(fobj);
 }
 
-frag.smiles <- function(smiles=NULL)
+frag.smiles <- function(smiles)
 {
-  m <- parse.smiles("CN(C)CC(C1=C=C(C=C1)OC)C2(CCCCC2)O");
+  m <- parse.smiles(smiles);
   m <- m[[1]];
 
   J("org/openscience/cdk/tools/manipulator/AtomContainerManipulator")$percieveAtomTypesAndConfigureAtoms(m);
@@ -17,8 +17,20 @@ frag.smiles <- function(smiles=NULL)
   return(m);
 }
 
-frag.generateFragments <- function(path=NULL, smiles=NULL)
+frag.generateFragments <- function(path, smiles)
 {
+  if (missing(path) == TRUE)
+  {
+    #stop("A path to MetFrag binaries have to be given.");
+    path <- "D:/Documents/MetFrag/lib/";
+  }
+  
+  if (missing(smiles) == TRUE)
+  {
+    #stop("A SMILES string for a compound have to be given.");
+    smiles <- "CN(C)CC(C1=C=C(C=C1)OC)C2(CCCCC2)O";
+  }  
+  
   fobj <- frag.loadFragmenter(path);
   smiles <- frag.smiles(smiles);
   

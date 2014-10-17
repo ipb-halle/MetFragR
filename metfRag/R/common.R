@@ -58,18 +58,35 @@ common.lib.lookup <- function(needle, haystack, link, split=NULL)
   return (occur);
 }
 
-common.lib.lookupFirst <- function(needle, haystack, link)
+common.lib.lookupFirst <- function(needle, haystack, link, split=NULL)
 {
   if (missing(needle) == TRUE || 
       missing(haystack) == TRUE || 
       length(haystack) == 0)
   { return(FALSE); }
-  
-  for (i in (1:length(haystack)))
+
+  if (is.null(split) == FALSE && 
+        is.null(split$sep) == FALSE && 
+        is.null(split$pos) == FALSE)
   {
-    if ((get.property(needle, link) == get.property(haystack[[i]], link)))
-    { 
-      return(TRUE);
+    mol.value.needle <- strsplit(get.property(needle, link),
+                                 split=split$sep)[[1]][split$pos];    
+    
+    for (i in (1:length(haystack)))
+    {
+      mol.value.hay <- strsplit(get.property(haystack[[i]], link),
+                                split=split$sep)[[1]][split$pos];      
+      
+      if (mol.value.needle == mol.value.hay)
+      { return(TRUE); }
+    }
+  }
+  else
+  {
+    for (i in (1:length(haystack)))
+    {
+      if ((get.property(needle, link) == get.property(haystack[[i]], link)))
+      { return(TRUE); }
     }
   }
   
