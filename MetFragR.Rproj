@@ -9,10 +9,9 @@ UseSpacesForTab: Yes
 NumSpacesForTab: 2
 Encoding: UTF-8
 
-RnwWeave: Sweave
+RnwWeave: knitr
 LaTeX: pdfLaTeX
 
 BuildType: Package
 PackagePath: metfRag
-PackageInstallArgs: --no-multiarch
-PackageRoxygenize: rd,namespace
+PackageInstallArgs: --no-multiarch --with-keep.source
