@@ -1,0 +1,35 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\defcounter {refsection}{0}\relax 
+\select@language {ngerman}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {1}Introduction}{3}{section.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2}Methods of the MetFragR package}{4}{section.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.1}Structure file preparation}{4}{subsection.2.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.2}Getting compounds from a database}{4}{subsection.2.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.3}Union, intersect and build difference of compounds}{6}{subsection.2.3}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.4}Scoring structures with MetFrag}{8}{subsection.2.4}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.5}Rank molecules among a given function or IAtomContainer properties}{11}{subsection.2.5}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.6}Get fragments of a compound}{12}{subsection.2.6}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3}Visualisation of Results}{13}{section.3}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.1}Score distribution}{13}{subsection.3.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.2}Plotting Maximum Common Substructure}{14}{subsection.3.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.3}Candidate Clustering}{15}{subsection.3.3}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.3.1}Clustering with displayed cluster numbers}{15}{subsubsection.3.3.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.3.2}Clustering with displayed MCSS}{17}{subsubsection.3.3.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.3.3}Clustering with displayed Scores}{18}{subsubsection.3.3.3}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4}Summary}{19}{section.4}
