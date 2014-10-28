@@ -1,0 +1,427 @@
+% $ biblatex auxiliary file $
+% $ biblatex version 2.4 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\entry{Dunn2008}{article}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Dunn}{D.}%
+     {Warwick~B.}{W.~B.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{language}{1}{%
+    {eng}%
+  }
+  \keyw{Animals; Bacteria, genetics/metabolism; Humans; Mammals,
+  genetics/metabolism; Mass Spectrometry, methods/trends; Plants,
+  genetics/metabolism; Proteome, metabolism; Proteomics, methods/trends}
+  \strng{namehash}{DWB1}
+  \strng{fullhash}{DWB1}
+  \field{abstract}{%
+  The functional levels of biological cells or organisms can be separated into
+  the genome, transcriptome, proteome and metabolome. Of these the metabolome
+  offers specific advantages to the investigation of the phenotype of
+  biological systems. The investigation of the metabolome (metabolomics) has
+  only recently appeared as a mainstream scientific discipline and is currently
+  developing rapidly for the study of microbial, plant and mammalian
+  metabolomes. The metabolome pipeline or workflow encompasses the processes of
+  sample collection and preparation, collection of analytical data, raw data
+  pre-processing, data analysis and data storage. Of these processes the
+  collection of analytical data will be discussed in this review with specific
+  interest shown in the application of mass spectrometry in the metabolomics
+  pipeline. The current developments in mass spectrometry platforms (GC-MS,
+  LC-MS, DIMS and imaging MS) and applications of specific interest will be
+  highlighted. The current limitations of these platforms and applications will
+  be discussed with areas requiring further development also highlighted. These
+  include the detectable coverage of the metabolome, the identification of
+  metabolites and the process of converting raw data to biological knowledge.%
+  }
+  \verb{doi}
+  \verb 10.1088/1478-3975/5/1/011001
+  \endverb
+  \field{number}{1}
+  \field{pages}{011001}
+  \field{title}{Current trends and future requirements for the mass
+  spectrometric investigation of microbial, mammalian and plant metabolomes.}
+  \verb{url}
+  \verb http://dx.doi.org/10.1088/1478-3975/5/1/011001
+  \endverb
+  \field{volume}{5}
+  \list{institution}{1}{%
+    {Manchester Centre for Integrative Systems Biology, School of Chemistry,
+  University of Manchester, Manchester Interdisciplinary Biocentre, 131
+  Princess Street, Manchester, M1 7DN, UK. warwick.dunn@manchester.ac.uk}%
+  }
+  \field{journaltitle}{Phys Biol}
+  \field{year}{2008}
+\endentry
+
+\entry{Wolf2010}{article}{}
+  \name{author}{4}{}{%
+    {{}%
+     {Wolf}{W.}%
+     {Sebastian}{S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Schmidt}{S.}%
+     {Stephan}{S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {M{\"{u}}ller-Hannemann}{M.-H.}%
+     {Matthias}{M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Neumann}{N.}%
+     {Steffen}{S.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{language}{1}{%
+    {eng}%
+  }
+  \keyw{Databases, Factual; Mass Spectrometry, methods; Metabolomics, methods;
+  Proteomics}
+  \strng{namehash}{WS+1}
+  \strng{fullhash}{WSSSMHMNS1}
+  \field{abstract}{%
+  Mass spectrometry has become the analytical method of choice in metabolomics
+  research. The identification of unknown compounds is the main bottleneck. In
+  addition to the precursor mass, tandem MS spectra carry informative fragment
+  peaks, but the coverage of spectral libraries of measured reference compounds
+  are far from covering the complete chemical space. Compound libraries such as
+  PubChem or KEGG describe a larger number of compounds, which can be used to
+  compare their in silico fragmentation with spectra of unknown metabolites.We
+  created the MetFrag suite to obtain a candidate list from compound libraries
+  based on the precursor mass, subsequently ranked by the agreement between
+  measured and in silico fragments. In the evaluation MetFrag was able to rank
+  most of the correct compounds within the top 3 candidates returned by an
+  exact mass query in KEGG. Compared to a previously published study, MetFrag
+  obtained better results than the commercial MassFrontier software. Especially
+  for large compound libraries, the candidates with a good score show a high
+  structural similarity or just different stereochemistry, a subsequent
+  clustering based on chemical distances reduces this redundancy. The in silico
+  fragmentation requires less than a second to process a molecule, and MetFrag
+  performs a search in KEGG or PubChem on average within 30 to 300 seconds,
+  respectively, on an average desktop PC.We presented a method that is able to
+  identify small molecules from tandem MS measurements, even without spectral
+  reference data or a large set of fragmentation rules. With today's massive
+  general purpose compound libraries we obtain dozens of very similar
+  candidates, which still allows a confident estimate of the correct compound
+  class. Our tool MetFrag improves the identification of unknown substances
+  from tandem MS spectra and delivers better results than comparable commercial
+  software. MetFrag is available through a web application, web services and as
+  java library. The web frontend allows the end-user to analyse single spectra
+  and browse the results, whereas the web service and console application are
+  aimed to perform batch searches and evaluation.%
+  }
+  \verb{doi}
+  \verb 10.1186/1471-2105-11-148
+  \endverb
+  \field{pages}{148}
+  \field{title}{In silico fragmentation for computer assisted identification of
+  metabolite mass spectra.}
+  \verb{url}
+  \verb http://dx.doi.org/10.1186/1471-2105-11-148
+  \endverb
+  \field{volume}{11}
+  \list{institution}{2}{%
+    {ress-}%
+    {Developmental Biology, Weinberg 3, 06120 Halle(Saale), Germany.
+  swolf@ipb-halle.de}%
+  }
+  \field{journaltitle}{BMC Bioinformatics}
+  \field{year}{2010}
+\endentry
+
+\entry{Jeol2006}{manual}{}
+  \name{author}{1}{}{%
+    {{}%
+     {JEOL}{J.}%
+     {}{}%
+     {}{}%
+     {}{}}%
+  }
+  \list{organization}{1}{%
+    {JEOL USA , Inc.}%
+  }
+  \strng{namehash}{J1}
+  \strng{fullhash}{J1}
+  \field{title}{Tandem Mass Spectrometry (MS/MS) Mass Spectrometry - Essays and
+  Tutorials}
+  \verb{url}
+  \verb http://www.jeolusa.com/DesktopModules/Bring2mind/DMX/Download.aspx?Entr
+  \verb yId=78
+  \endverb
+  \field{year}{2006}
+\endentry
+
+\entry{Urbanek2013}{manual}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Urbanek}{U.}%
+     {Simon}{S.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{US1}
+  \strng{fullhash}{US1}
+  \field{note}{R package version 0.9-6}
+  \field{title}{rJava: Low-level R to Java interface}
+  \verb{url}
+  \verb http://CRAN.R-project.org/package=rJava
+  \endverb
+  \field{year}{2013}
+\endentry
+
+\entry{Guha2007}{article}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Guha}{G.}%
+     {Rajarshi}{R.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{GR1}
+  \strng{fullhash}{GR1}
+  \field{number}{6}
+  \field{title}{Chemical Informatics Functionality in R}
+  \field{volume}{18}
+  \field{journaltitle}{Journal of Statistical Software}
+  \field{year}{2007}
+\endentry
+
+\entry{Lang2013a}{manual}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Lang}{L.}%
+     {Duncan~Temple}{D.~T.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{LDT1}
+  \strng{fullhash}{LDT1}
+  \field{note}{R package version 1.95-4.1}
+  \field{title}{RCurl: General network (HTTP/FTP/...) client interface for R}
+  \verb{url}
+  \verb http://CRAN.R-project.org/package=RCurl
+  \endverb
+  \field{year}{2013}
+\endentry
+
+\entry{Tenenbaum}{manual}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Tenenbaum}{T.}%
+     {Dan}{D.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{TD1}
+  \strng{fullhash}{TD1}
+  \field{note}{R package version 1.4.1}
+  \field{title}{KEGGREST: Client-side REST access to KEGG}
+\endentry
+
+\entry{Southern2011}{article}{}
+  \name{author}{2}{}{%
+    {{}%
+     {Southern}{S.}%
+     {Mark~R.}{M.~R.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Griffin}{G.}%
+     {Patrick~R.}{P.~R.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{language}{1}{%
+    {eng}%
+  }
+  \keyw{Computational Biology, methods; Databases, Factual; Information Storage
+  and Retrieval, methods; Internet; Programming Languages; Software}
+  \strng{namehash}{SMRGPR1}
+  \strng{fullhash}{SMRGPR1}
+  \field{abstract}{%
+  PubChem is a public repository of chemical structures and associated
+  biological activities. The PubChem BioAssay database contains assay
+  descriptions, conditions and readouts and biological screening results that
+  have been submitted by the biomedical research community. The PubChem web
+  site and Power User Gateway (PUG) web service allow users to interact with
+  the data and raw files are available via FTP. These resources are helpful to
+  many but there can also be great benefit by using a software API to
+  manipulate the data. Here, we describe a Java API with entity objects mapped
+  to the PubChem Schema and with wrapper functions for calling the NCBI
+  eUtilities and PubChem PUG web services. PubChem BioAssays and associated
+  chemical compounds can then be queried and manipulated in a local relational
+  database. Features include chemical structure searching and generation and
+  display of curve fits from stored dose-response experiments, something that
+  is not yet available within PubChem itself. The aim is to provide researchers
+  with a fast, consistent, queryable local resource from which to manipulate
+  PubChem BioAssays in a database agnostic manner. It is not intended as an end
+  user tool but to provide a platform for further automation and tools
+  development.http://code.google.com/p/pubchemdb.%
+  }
+  \verb{doi}
+  \verb 10.1093/bioinformatics/btq715
+  \endverb
+  \field{number}{5}
+  \field{pages}{741\bibrangedash 742}
+  \field{title}{A Java API for working with PubChem datasets.}
+  \verb{url}
+  \verb http://dx.doi.org/10.1093/bioinformatics/btq715
+  \endverb
+  \field{volume}{27}
+  \list{institution}{2}{%
+    {Translational Research Institute}%
+    {Molecular Therapeutics, The Scripps Research Institute, Scripps Florida,
+  Jupiter, FL 33458, USA. southern@scripps.edu}%
+  }
+  \field{journaltitle}{Bioinformatics}
+  \field{year}{2011}
+\endentry
+
+\entry{Lang2013b}{manual}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Lang}{L.}%
+     {Duncan~Temple}{D.~T.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{LDT1}
+  \strng{fullhash}{LDT1}
+  \field{note}{R package version 3.98-1.1}
+  \field{title}{XML: Tools for parsing and generating XML within R and S-Plus}
+  \verb{url}
+  \verb http://CRAN.R-project.org/package=XML
+  \endverb
+  \field{year}{2013}
+\endentry
+
+\entry{Metfrag2014}{misc}{}
+  \verb{url}
+  \verb http://msbi.ipb-halle.de/MetFrag/
+  \endverb
+\endentry
+
+\entry{Cao2008}{article}{}
+  \name{author}{3}{}{%
+    {{}%
+     {Cao}{C.}%
+     {Yiqun}{Y.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Jiang}{J.}%
+     {Tao}{T.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Girke}{G.}%
+     {Thomas}{T.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{language}{1}{%
+    {eng}%
+  }
+  \keyw{Algorithms; Artificial Intelligence; Drug Design; Pattern Recognition,
+  Automated, methods; Pharmaceutical Preparations, chemistry}
+  \strng{namehash}{CYJTGT1}
+  \strng{fullhash}{CYJTGT1}
+  \field{abstract}{%
+  The prediction of biologically active compounds is of great importance for
+  high-throughput screening (HTS) approaches in drug discovery and chemical
+  genomics. Many computational methods in this area focus on measuring the
+  structural similarities between chemical structures. However, traditional
+  similarity measures are often too rigid or consider only global similarities
+  between structures. The maximum common substructure (MCS) approach provides a
+  more promising and flexible alternative for predicting bioactive compounds.In
+  this article, a new backtracking algorithm for MCS is proposed and compared
+  to global similarity measurements. Our algorithm provides high flexibility in
+  the matching process, and it is very efficient in identifying local
+  structural similarities. To predict and cluster biologically active compounds
+  more efficiently, the concept of basis compounds is proposed that enables
+  researchers to easily combine the MCS-based and traditional similarity
+  measures with modern machine learning techniques. Support vector machines
+  (SVMs) are used to test how the MCS-based similarity measure and the basis
+  compound vectorization method perform on two empirically tested datasets. The
+  test results show that MCS complements the well-known atom pair
+  descriptor-based similarity measure. By combining these two measures, our
+  SVM-based model predicts the biological activities of chemical compounds with
+  higher specificity and sensitivity.Supplementary data are available at
+  Bioinformatics online.%
+  }
+  \verb{doi}
+  \verb 10.1093/bioinformatics/btn186
+  \endverb
+  \field{number}{13}
+  \field{pages}{i366\bibrangedash i374}
+  \field{title}{A maximum common substructure-based algorithm for searching and
+  predicting drug-like compounds.}
+  \verb{url}
+  \verb http://dx.doi.org/10.1093/bioinformatics/btn186
+  \endverb
+  \field{volume}{24}
+  \list{institution}{1}{%
+    {, CA 92521, USA. ycao@cs.ucr.edu}%
+  }
+  \field{journaltitle}{Bioinformatics}
+  \field{year}{2008}
+\endentry
+
+\entry{Rogers1960}{article}{}
+  \name{author}{2}{}{%
+    {{}%
+     {Rogers}{R.}%
+     {D.~J.}{D.~J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Tanimoto}{T.}%
+     {T.~T.}{T.~T.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{language}{1}{%
+    {eng}%
+  }
+  \strng{namehash}{RDJTTT1}
+  \strng{fullhash}{RDJTTT1}
+  \verb{doi}
+  \verb 10.1126/science.132.3434.1115
+  \endverb
+  \field{number}{3434}
+  \field{pages}{1115\bibrangedash 1118}
+  \field{title}{A Computer Program for Classifying Plants.}
+  \verb{url}
+  \verb http://dx.doi.org/10.1126/science.132.3434.1115
+  \endverb
+  \field{volume}{132}
+  \field{journaltitle}{Science}
+  \field{year}{1960}
+\endentry
+
+\lossort
+\endlossort
+
+\endinput

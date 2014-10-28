@@ -5,7 +5,56 @@
 % \VignetteIndexEntry{Metabolite Identification with MetFrag in R}
 % \VignetteKeywords{mass spectrometry, tandemms, metabolite identification}
 % \VignettePackage{metfRag}
-\documentclass[12pt, a4paper]{scrartcl}
+\documentclass[12pt, a4paper]{scrartcl}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
 
 %Neue Pakete
 \usepackage[latin1]{inputenc}
@@ -44,7 +93,7 @@
 \newcommand{\Rfunarg}[1]{{\textit{#1}}}
 
 \bibliography{references.bib}
-
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 %\SweaveOpts{concordance=TRUE}
 \title{Metabolite Identification with MetFrag in R}
@@ -60,10 +109,14 @@ In this section the MetFragR package is introduced and described.
 For a better understanding the functionality of a mass spectrometer (MS/MS) was outlined. 
 Initially, the package shall be loaded.
 
-<<LibraryPreloade,warning=FALSE,message=FALSE>>=
-library(rcdk)
-library(metfRag)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(rcdk)}
+\hlkwd{library}\hlstd{(metfRag)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 
 For the understanding of the metabolism of several organisms different analysis methods
 are necessary. One of these methods is referred as mass spectrometry to detect and identify compounds 
@@ -96,31 +149,75 @@ on mentioned methods.
 To load compounds from a chemical table file like SDF you can directly use the 
 function from \Rpackage{rcdk}. In the example below a metfRag system file is used. The included SDF 
 is the result of MetFusion processing of the MS/MS spectrum of the CASMI 2014 challenge 5 \cite{Guha2007}.
-<<loadStructures,warning=FALSE,message=FALSE>>=
-file <- "sdf/metfusion-category2-Challenge5-pubchem.sdf"
-sdfile <- system.file(file, package = "metfRag")
-mols <- load.molecules(sdfile)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{file} \hlkwb{<-} \hlstr{"sdf/metfusion-category2-Challenge5-pubchem.sdf"}
+\hlstd{sdfile} \hlkwb{<-} \hlkwd{system.file}\hlstd{(file,} \hlkwc{package} \hlstd{=} \hlstr{"metfRag"}\hlstd{)}
+\hlstd{mols} \hlkwb{<-} \hlkwd{load.molecules}\hlstd{(sdfile)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 \subsection{Getting compounds from a database}
 To get a list of molecules without a file we send a query to available 
 databases KEGG or PubChem by using the exact mass and the mass deviation (in ppm) to specify a compound. In addition to that, metfRag uses RCurl to retrieve the results which delivers a database \cite{Lang2013a}.
 Additionally, metfRag can be used to search by a database identifier/ID. KEGG uses three parameters among them also the mol weight. Let us view an example for PubChem to get some molecules but the same could be applied for KEGG:
 
-<<getKeggMolecule>>=
-params <- list(mass=174.05, range=0.001);
-pubchem.mol <- db.pubchem.getId(params)[1:5,];
-pubchem.mol[1:5]
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{params} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{mass}\hlstd{=}\hlnum{174.05}\hlstd{,} \hlkwc{range}\hlstd{=}\hlnum{0.001}\hlstd{);}
+\hlstd{pubchem.mol} \hlkwb{<-} \hlkwd{db.pubchem.getId}\hlstd{(params)[}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{,];}
+\hlstd{pubchem.mol[}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{]}
+\end{alltt}
+\begin{verbatim}
+## [[1]]
+## [1] "84766583"
+## 
+## [[2]]
+## [1] "84654828"
+## 
+## [[3]]
+## [1] "84654827"
+## 
+## [[4]]
+## [1] "84654826"
+## 
+## [[5]]
+## [1] "84654825"
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 Each entry of the result is converted to an IAtomContainer which is described in the manual from 
 \Rpackage{rcdk} \cite{Guha2007}. Every container contains properties which can be altered by an user. If one send a request, PubChem add specific properties like IUPAC name and deliver the associated molecules. This information is necessary to process the molecules further with set operations. \\[0.5em]
 KEGG use the Representational State Transfer (REST) paradigma to grant web access to own data. Therefor, metfRag use the package KEGGREST from Bioconductor \cite{Tenenbaum}. Hence, each query and the obtained additional properties build two requests. \\[0.5em]
 Similarly, metfRag use for the PubChem requests the paradigma PUG REST (power user gateway) which apply FTP to give a access to the data \cite{Southern2011}. To obtain the results in a structured form metfRag uses XML to process the resulted XML files to IAtomContainer \cite{Lang2013b}. The number of candidates is limited by PubChem and metfRag to default value 100.
 
-<<molInfo>>=
-  pubchem.container <- db.pubchem.getMoleculeContainer(pubchem.mol)
-  get.properties(pubchem.container[[1]])[1:5]
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+  \hlstd{pubchem.container} \hlkwb{<-} \hlkwd{db.pubchem.getMoleculeContainer}\hlstd{(pubchem.mol)}
+  \hlkwd{get.properties}\hlstd{(pubchem.container[[}\hlnum{1}\hlstd{]])[}\hlnum{1}\hlopt{:}\hlnum{5}\hlstd{]}
+\end{alltt}
+\begin{verbatim}
+## $`cdk:Title`
+## [1] "84766583"
+## 
+## $`cdk:Remark`
+## [1] NA
+## 
+## $COMPOUND_CID
+## [1] "84766583"
+## 
+## $COMPOUND_CANONICALIZED
+## [1] "1"
+## 
+## $CACTVS_COMPLEXITY
+## [1] "143"
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 \newpage
 \subsection{Union, intersect and build difference of compounds}
@@ -128,81 +225,113 @@ To perform set operations on IAtomContainers two compound lists are necessary. T
 properties which are equal in both container lists. 
 Thereto, the database prefix from each molecule property was removed. To adept the equal properties we could omit the third link parameter or we call the function \Rfunction{showLinkOptions}.
 
-<<showOptions>>=
-  opt <- container.union(pubchem.container,pubchem.container)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+  \hlstd{opt} \hlkwb{<-} \hlkwd{container.union}\hlstd{(pubchem.container,pubchem.container)}
+\end{alltt}
+\begin{verbatim}
+## NULL
+\end{verbatim}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning: Please choose a link from above. You could use the\\\#\#\ \ \ \ \ \ \ \ \ \ function: comm.lib.showLinkOptions(set.a,set.b)}}\end{kframe}
+\end{knitrout}
 
 This show us the possible links of both container. To union the both sets we could call \Rfunction{container.union} and \Rfunction{container.intersect} to intersect two container sets. Then, the molecule property from first list was compared with each molecule property from second list. The doubled occurence of an element are filtered which means that the 
 first element is in the list and the second element is discard.
 
-<<unionIntersect, eval=FALSE>>=
-  container.union(pubchem.container, 
-                  pubchem.container, 
-                  "MOLECULAR_FORMULA")
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+  \hlkwd{container.union}\hlstd{(pubchem.container,}
+                  \hlstd{pubchem.container,}
+                  \hlstr{"MOLECULAR_FORMULA"}\hlstd{)}
 
-  container.intersect(pubchem.container, 
-                      pubchem.container, 
-                      "MOLECULAR_FORMULA")
-@
+  \hlkwd{container.intersect}\hlstd{(pubchem.container,}
+                      \hlstd{pubchem.container,}
+                      \hlstr{"MOLECULAR_FORMULA"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 
 If we would like to build the symmetric difference or asymmetric difference we could call \Rfunction{container.symmetric.difference} and \Rfunction{container.asymmetric.difference}. 
 
-<<a_symmetric, eval=FALSE>>=
-  container.symmetric.difference(pubchem.container, 
-                                 pubchem.container, 
-                                 "MOLECULAR_FORMULA")
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+  \hlkwd{container.symmetric.difference}\hlstd{(pubchem.container,}
+                                 \hlstd{pubchem.container,}
+                                 \hlstr{"MOLECULAR_FORMULA"}\hlstd{)}
 
-  container.asymmetric.difference(pubchem.container, 
-                                 pubchem.container, 
-                                 "MOLECULAR_FORMULA")
-@
+  \hlkwd{container.asymmetric.difference}\hlstd{(pubchem.container,}
+                                 \hlstd{pubchem.container,}
+                                 \hlstr{"MOLECULAR_FORMULA"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 
 We could search a molecule by a link in a list of compounds. At that point we are interested in all positions where
 the molecule occurs. 
 Thereto, we call the function \Rfunction{common.lib.lookup}. The link describes a property of the molecule. The value of a given molecule is validated against the properties in the compound list. To split a property like 'IUPAC\_INCHIKEY' into parts the parameter 'split' is introduced. This parameter is a list with a seperator and the position of the substring which is used for the comparison.
 
-<<lookupMolecule, eval=TRUE>>=
-  split <- list(sep="-", pos=3)
-  common.lib.lookup(pubchem.container[[1]], 
-                    pubchem.container,
-                    "IUPAC_INCHIKEY",
-                    split)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+  \hlstd{split} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{sep}\hlstd{=}\hlstr{"-"}\hlstd{,} \hlkwc{pos}\hlstd{=}\hlnum{3}\hlstd{)}
+  \hlkwd{common.lib.lookup}\hlstd{(pubchem.container[[}\hlnum{1}\hlstd{]],}
+                    \hlstd{pubchem.container,}
+                    \hlstr{"IUPAC_INCHIKEY"}\hlstd{,}
+                    \hlstd{split)}
+\end{alltt}
+\begin{verbatim}
+## [1] 1 2 3 4 5
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 Another variant of this principle is the function \Rfunction{common.lib.lookupFirst}. Only the first occurence of a molecule is considered.
 
-<<lookupMoleculeFirst, eval=FALSE>>=
-  split <- list(sep="-", pos=3)
-  common.lib.lookupFirst(kegg.container[[1]],
-                         pubchem.container,
-                         "IUPAC_INCHIKEY",
-                         split)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+  \hlstd{split} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{sep}\hlstd{=}\hlstr{"-"}\hlstd{,} \hlkwc{pos}\hlstd{=}\hlnum{3}\hlstd{)}
+  \hlkwd{common.lib.lookupFirst}\hlstd{(kegg.container[[}\hlnum{1}\hlstd{]],}
+                         \hlstd{pubchem.container,}
+                         \hlstr{"IUPAC_INCHIKEY"}\hlstd{,}
+                         \hlstd{split)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 
 \newpage
 \subsection{Scoring structures with MetFrag}
 To score received compounds from a database MetFragR uses two options. On the one hand scoring of a chemical table format SDF or mol file. For this option metfRag needs a path. Obligatory this package needs the mass-to-charge ratio values from the peak list, the intensity values and the exact mass of the 
 precursor ion. 
 
-<<scoreMetfrag, warning=FALSE, message=FALSE>>=
-file <- "sdf/metfusion-category2-Challenge5.mf"
-queryfile <- system.file(file, package = "metfRag")
-challenge5 <- read.table(queryfile, 
-                         sep="\t", 
-                         col.names=c("mz", "inten"))
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{file} \hlkwb{<-} \hlstr{"sdf/metfusion-category2-Challenge5.mf"}
+\hlstd{queryfile} \hlkwb{<-} \hlkwd{system.file}\hlstd{(file,} \hlkwc{package} \hlstd{=} \hlstr{"metfRag"}\hlstd{)}
+\hlstd{challenge5} \hlkwb{<-} \hlkwd{read.table}\hlstd{(queryfile,}
+                         \hlkwc{sep}\hlstd{=}\hlstr{"\textbackslash{}t"}\hlstd{,}
+                         \hlkwc{col.names}\hlstd{=}\hlkwd{c}\hlstd{(}\hlstr{"mz"}\hlstd{,} \hlstr{"inten"}\hlstd{))}
 
-scoredMols <- score.molecules.from.sdf(sdfile, 
-                                       mzs=challenge5[,"mz"], 
-                                       ints=challenge5[,"mz"], 
-                                       exact.mass=290.0646, 
-                                       mz.abs=0.001, 
-                                       mz.ppm=5, 
-                                       search.ppm=5, 
-                                       pos.charge=TRUE, 
-                                       mode=1, 
-                                       tree.depth=2)
-scoredMols <- mols
-@
+\hlstd{scoredMols} \hlkwb{<-} \hlkwd{score.molecules.from.sdf}\hlstd{(sdfile,}
+                                       \hlkwc{mzs}\hlstd{=challenge5[,}\hlstr{"mz"}\hlstd{],}
+                                       \hlkwc{ints}\hlstd{=challenge5[,}\hlstr{"mz"}\hlstd{],}
+                                       \hlkwc{exact.mass}\hlstd{=}\hlnum{290.0646}\hlstd{,}
+                                       \hlkwc{mz.abs}\hlstd{=}\hlnum{0.001}\hlstd{,}
+                                       \hlkwc{mz.ppm}\hlstd{=}\hlnum{5}\hlstd{,}
+                                       \hlkwc{search.ppm}\hlstd{=}\hlnum{5}\hlstd{,}
+                                       \hlkwc{pos.charge}\hlstd{=}\hlnum{TRUE}\hlstd{,}
+                                       \hlkwc{mode}\hlstd{=}\hlnum{1}\hlstd{,}
+                                       \hlkwc{tree.depth}\hlstd{=}\hlnum{2}\hlstd{)}
+\hlstd{scoredMols} \hlkwb{<-} \hlstd{mols}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 
 These example values are extracted from the MetFrag Website \cite{Metfrag2014}. A MS/MS spectrum was generated by using the entered parameters (Figure \ref{fragSpec}).
 \newpage
@@ -220,25 +349,55 @@ For this reason the optional search.ppm parameter is not necessary. Previously, 
 generated with help of the database functions \Rfunction{db.kegg.getMoleculeContainer} or
 \Rfunction{db.pubchem.getMoleculeContainer} mentioned before in section 2.2.
 
-<<scoreMetfragContainer>>=
-  mzs <- c(119.051,123.044,147.044,153.019,179.036,
-           189.058,273.076,274.083)
-  ints <-c(467.616,370.662,6078.145,10000.0,141.192,
-           176.358,10000.000,318.003)
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+  \hlstd{mzs} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlnum{119.051}\hlstd{,}\hlnum{123.044}\hlstd{,}\hlnum{147.044}\hlstd{,}\hlnum{153.019}\hlstd{,}\hlnum{179.036}\hlstd{,}
+           \hlnum{189.058}\hlstd{,}\hlnum{273.076}\hlstd{,}\hlnum{274.083}\hlstd{)}
+  \hlstd{ints} \hlkwb{<-}\hlkwd{c}\hlstd{(}\hlnum{467.616}\hlstd{,}\hlnum{370.662}\hlstd{,}\hlnum{6078.145}\hlstd{,}\hlnum{10000.0}\hlstd{,}\hlnum{141.192}\hlstd{,}
+           \hlnum{176.358}\hlstd{,}\hlnum{10000.000}\hlstd{,}\hlnum{318.003}\hlstd{)}
 
-  pubchem.container <- score.molecules.from.container(
-    pubchem.container,
-    mzs,
-    ints,
-    272.06847)
-@
+  \hlstd{pubchem.container} \hlkwb{<-} \hlkwd{score.molecules.from.container}\hlstd{(}
+    \hlstd{pubchem.container,}
+    \hlstd{mzs,}
+    \hlstd{ints,}
+    \hlnum{272.06847}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 
 \newpage
 After the scoring seven new scoring properties are added to the database specific properties.
 
-<<exampleScoringParameters>>=
-  tail(get.properties(pubchem.container[[1]]), n=7)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+  \hlkwd{tail}\hlstd{(}\hlkwd{get.properties}\hlstd{(pubchem.container[[}\hlnum{1}\hlstd{]]),} \hlkwc{n}\hlstd{=}\hlnum{7}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## $MetFragID
+## [1] "0"
+## 
+## $PeakScore
+## [1] 922.6
+## 
+## $BondEnergyScore
+## [1] 960
+## 
+## $Score
+## [1] 0.75
+## 
+## $NoPeaksExplained
+## [1] 1
+## 
+## $Rank
+## [1] 1
+## 
+## $PeaksExplained
+## [1] "119.051 47.0 "
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 \newpage
 \subsection{Rank molecules among a given function or IAtomContainer properties}
@@ -257,20 +416,31 @@ by numeric molecule properties. To display all numeric properties the function
 \Rfunction{comm.lib.showNumberOptions} could be used. If you call the ranking 
 function \Rfunction{scoring.getRanks} without a sorting property the output will be the same.
 
-<<getNumericProperties, eval=FALSE>>=
-  comm.lib.showNumberOptions(pubchem.container)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+  \hlkwd{comm.lib.showNumberOptions}\hlstd{(pubchem.container)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 
 With this parameter we get the possible sorting parameters by which the compounds are classified. 
 In addition to this we need the common condition which we get by using the function 
 \Rfunction{comm.lib.showLinkOptions}. As a result the condition list contain a name which determined by molecule property name
 and a value which determined by molecule property value. 
 
-<<scoring, eval=TRUE>>=
-  sorting <- list("PeakScore","Score")
-  condition <- list(IUPAC_INCHIKEY="PAFJIHSCEHOAMQ-UHFFFAOYSA-N")
-  scoring.getRanks(pubchem.container, sorting, condition)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+  \hlstd{sorting} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlstr{"PeakScore"}\hlstd{,}\hlstr{"Score"}\hlstd{)}
+  \hlstd{condition} \hlkwb{<-} \hlkwd{list}\hlstd{(}\hlkwc{IUPAC_INCHIKEY}\hlstd{=}\hlstr{"PAFJIHSCEHOAMQ-UHFFFAOYSA-N"}\hlstd{)}
+  \hlkwd{scoring.getRanks}\hlstd{(pubchem.container, sorting, condition)}
+\end{alltt}
+\begin{verbatim}
+## list()
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 We get a list with the ranking results based on the molecule with the condition properties
 sorted by the sorting parameters.
@@ -279,37 +449,54 @@ sorted by the sorting parameters.
 Additionally, we can rank by an own function. Hence, we declare a list as mentioned before.
 In contrast to the previous example a new list, including the defined scoring function, is added into the existing list.
 The first parameters are the sorting properties which used in the anonymous function. In our example the list was ordered by the PeakScore, the Score and the own function. We can force the splitting of compound properties with a split parameter which explained in section 2.3.
-<<scoringFunc, eval=TRUE>>=
-  scoring.getRanks(pubchem.container,
-                   list("PeakScore",
-                        "Score",
-                        list("PeakScore", "Score", function(x, y) x*y)),
-                   list(IUPAC_INCHIKEY="PAFJIHSCEHOAMQ"),
-                   list(sep="-", pos=1))
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+  \hlkwd{scoring.getRanks}\hlstd{(pubchem.container,}
+                   \hlkwd{list}\hlstd{(}\hlstr{"PeakScore"}\hlstd{,}
+                        \hlstr{"Score"}\hlstd{,}
+                        \hlkwd{list}\hlstd{(}\hlstr{"PeakScore"}\hlstd{,} \hlstr{"Score"}\hlstd{,} \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{,} \hlkwc{y}\hlstd{) x}\hlopt{*}\hlstd{y)),}
+                   \hlkwd{list}\hlstd{(}\hlkwc{IUPAC_INCHIKEY}\hlstd{=}\hlstr{"PAFJIHSCEHOAMQ"}\hlstd{),}
+                   \hlkwd{list}\hlstd{(}\hlkwc{sep}\hlstd{=}\hlstr{"-"}\hlstd{,} \hlkwc{pos}\hlstd{=}\hlnum{1}\hlstd{))}
+\end{alltt}
+\begin{verbatim}
+## list()
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 \subsection{Get fragments of a compound}
 To get fragments of a compound a SMILES string and the path to MetFrag binaries 
 are required. Hence, the compound is fragmented by using the MetFrag fragmenter which use
 the most common substructure. The SMILES is available from the compound properties \cite{Wolf2010}.
 The fragments can be visualised by calling \Rfunction{view.molecule.2d}.
-<<fragmentSmiles,eval=FALSE>>=
-  path <- "D:/Documents/MetFrag/lib/"
-  smiles <- "CN(C)CC(C1=C=C(C=C1)OC)C2(CCCCC2)O"
-  frag.generateFragments(path, smiles)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+  \hlstd{path} \hlkwb{<-} \hlstr{"D:/Documents/MetFrag/lib/"}
+  \hlstd{smiles} \hlkwb{<-} \hlstr{"CN(C)CC(C1=C=C(C=C1)OC)C2(CCCCC2)O"}
+  \hlkwd{frag.generateFragments}\hlstd{(path, smiles)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 
 \newpage
 \section{Visualisation of Results}
 \subsection{Score distribution}
 First, we check the score distribution. Hence, we extract the numeric values of a list of molecules
 and save them in a list. These are displayed as a dot plot (Figure \ref{fig:plotScores}) whereby the axis of ordinates shows the score values and the axis of abscissas shows the position of the scored values.
-<<plotScores, fig=TRUE, eps=FALSE, fig.width=5, fig.height=5, fig.align='center', warning=FALSE, message=FALSE, fig.pos='h!', fig.cap='Illustration of the score distribution. The score and the respective position was plotted against each other.'>>=
-scores <- getScores(scoredMols, scoreprop="Score")
-scores <- getScores(scoredMols, scoreprop="newscore")
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{scores} \hlkwb{<-} \hlkwd{getScores}\hlstd{(scoredMols,} \hlkwc{scoreprop}\hlstd{=}\hlstr{"Score"}\hlstd{)}
+\hlstd{scores} \hlkwb{<-} \hlkwd{getScores}\hlstd{(scoredMols,} \hlkwc{scoreprop}\hlstd{=}\hlstr{"newscore"}\hlstd{)}
 
-plot(scores)
-@
+\hlkwd{plot}\hlstd{(scores)}
+\end{alltt}
+\end{kframe}
+\includegraphics[width=\maxwidth]{figure/plotScores} 
+
+\end{knitrout}
 
 \newpage
 \subsection{Plotting Maximum Common Substructure}
@@ -317,34 +504,29 @@ To calculate the MCSS for given clusters the function \Rfunction{getClusterMCSS}
 a 1:1 atom correspondence between two compounds. The bond connection and atom types are equal
 in both molecules in addition to the largest number of bonds or atoms. Such structural similarities
 are often used to predict bioactive compounds \cite{Cao2008}.
-<<calcClusterFirst, warning=FALSE, message=FALSE, include=FALSE>>=
-scoredMols <- scoredMols[1:min(50, length(scoredMols))]
-cluster <- hclust.mols(mols=scoredMols, 
-                       scoreprop="Score", 
-                       idprop="DatabaseID")
-@
 
-<<numberDendrogram>>=
-  clusterreps <- getClusterMCSS(cluster, mols=scoredMols, k=7, which=1:7)
-@
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+  \hlstd{clusterreps} \hlkwb{<-} \hlkwd{getClusterMCSS}\hlstd{(cluster,} \hlkwc{mols}\hlstd{=scoredMols,} \hlkwc{k}\hlstd{=}\hlnum{7}\hlstd{,} \hlkwc{which}\hlstd{=}\hlnum{1}\hlopt{:}\hlnum{7}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 
 Each MCSS of a cluster can be plotted separately - with an overlay of the 
 cluster number with the function \Rfunction{plotMol}. This function requires i. a. molecules as IAtomContainer 
 objects and an optional watermark (Figure \ref{fig:clusterep}). 
-<<plotClusterPseudo, include = TRUE, eval=FALSE, eps=FALSE, warning=FALSE, message=FALSE>>=
-  plotMol(clusterreps[[1]], watermark=1)
-  plotMol(clusterreps[[2]], watermark=2)
-  ...
-@
-<<plotClusterReps, fig=TRUE, include = FALSE, eps=FALSE, warning=FALSE, message=FALSE>>=
-  plotMol(clusterreps[[1]], watermark=1)
-  plotMol(clusterreps[[2]], watermark=2)
-  plotMol(clusterreps[[3]], watermark=3)
-  plotMol(clusterreps[[4]], watermark=4)
-  plotMol(clusterreps[[5]], watermark=5)
-  plotMol(clusterreps[[6]], watermark=6)
-  plotMol(clusterreps[[7]], watermark=7)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+  \hlkwd{plotMol}\hlstd{(clusterreps[[}\hlnum{1}\hlstd{]],} \hlkwc{watermark}\hlstd{=}\hlnum{1}\hlstd{)}
+  \hlkwd{plotMol}\hlstd{(clusterreps[[}\hlnum{2}\hlstd{]],} \hlkwc{watermark}\hlstd{=}\hlnum{2}\hlstd{)}
+  \hlstd{...}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
 
 \setkeys{Gin}{width=0.3\textwidth}
 \begin{figure}[h!]
@@ -366,12 +548,16 @@ objects and an optional watermark (Figure \ref{fig:clusterep}).
 \subsubsection{Clustering with displayed cluster numbers}
 If we want to plot similar compounds in a dendrogram, firstly we have to create clusters. On that point we restrict the length of the list to the first 50 molecules and group them based on structural similarity. We could use a SD file or a list of compounds with the score property and the database property. In this example we get 10 groups.
 
-<<calcCluster, warning=FALSE, message=FALSE>>=
-scoredMols <- scoredMols[1:min(50, length(scoredMols))]
-cluster <- hclust.mols(mols=scoredMols, 
-                       scoreprop="Score", 
-                       idprop="DatabaseID")
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{scoredMols} \hlkwb{<-} \hlstd{scoredMols[}\hlnum{1}\hlopt{:}\hlkwd{min}\hlstd{(}\hlnum{50}\hlstd{,} \hlkwd{length}\hlstd{(scoredMols))]}
+\hlstd{cluster} \hlkwb{<-} \hlkwd{hclust.mols}\hlstd{(}\hlkwc{mols}\hlstd{=scoredMols,}
+                       \hlkwc{scoreprop}\hlstd{=}\hlstr{"Score"}\hlstd{,}
+                       \hlkwc{idprop}\hlstd{=}\hlstr{"DatabaseID"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 To plot the molecule cluster as a dendrogram with cluster numbers overlaid, firstly we create a plot
 either by applying \Rfunction{plot} or by using \Rfunction{hclust}. Then we create the numbers of each cluster.
 For this purpose the maximum common substructure (MCSS) is calculated with $k=7$ clusters whereby all 7 
@@ -385,10 +571,24 @@ distance which formal formulated as \cite{Rogers1960}
 In our case, this describe the structural similarity of two different compounds to a third compound. 
 
 \newpage
-<<plotNumDendro, fig=TRUE, fig.width=5, fig.height=5, fig.align='center', eps=FALSE, warning=FALSE, message=FALSE, fig.cap='Example plot of clustered compounds. If the MCSS is most similar two of 50 molecules joined into a single cluster illustrate by a vertical line. In contrast to that if a cluster split into new cluster the horizontal bar illustrate the dissimilarity. The cluster can numbered and marked with a coloured border.', fig.pos='h!'>>=
-plot(cluster, hang=-1)
-myimages.clustNumbers(cluster, k=7, which=1:7, border=2)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(cluster,} \hlkwc{hang}\hlstd{=}\hlopt{-}\hlnum{1}\hlstd{)}
+\hlkwd{myimages.clustNumbers}\hlstd{(cluster,} \hlkwc{k}\hlstd{=}\hlnum{7}\hlstd{,} \hlkwc{which}\hlstd{=}\hlnum{1}\hlopt{:}\hlnum{7}\hlstd{,} \hlkwc{border}\hlstd{=}\hlnum{2}\hlstd{)}
+\end{alltt}
+\end{kframe}\begin{figure}[h!]
+
+
+{\centering \includegraphics[width=\maxwidth]{figure/plotNumDendro} 
+
+}
+
+\caption[Example plot of clustered compounds]{Example plot of clustered compounds. If the MCSS is most similar two of 50 molecules joined into a single cluster illustrate by a vertical line. In contrast to that, if a cluster split into new cluster the horizontal bar illustrate the dissimilarity. The cluster can numbered and marked with a coloured border.\label{fig:plotNumDendro}}
+\end{figure}
+
+
+\end{knitrout}
 
 \newpage
 \subsubsection{Clustering with displayed MCSS}
@@ -396,10 +596,24 @@ If we want to plot the clusters with the most common substructure overlaid inste
 number, we create a cluster dendrogram as mentioned before. In the following, we use the function 
 \Rfunction{myimages.hclust} to create MCSS below the cluster dendrogram (Figure \ref{fig:plotMCSSDendrogram}).
 
-<<plotMCSSDendrogram, fig=TRUE, fig.width=5, fig.height=5, fig.align='center', eps=FALSE, warning=FALSE, message=FALSE, fig.cap='Cluster dendrogram of 50 sample compounds with given coloured border to mark a specific cluster.', fig.pos='h!'>>=
-plot(cluster, hang=-1)
-myimages.hclust(cluster, mols=scoredMols, k=7, which=1:7, border=2)
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plot}\hlstd{(cluster,} \hlkwc{hang}\hlstd{=}\hlopt{-}\hlnum{1}\hlstd{)}
+\hlkwd{myimages.hclust}\hlstd{(cluster,} \hlkwc{mols}\hlstd{=scoredMols,} \hlkwc{k}\hlstd{=}\hlnum{7}\hlstd{,} \hlkwc{which}\hlstd{=}\hlnum{1}\hlopt{:}\hlnum{7}\hlstd{,} \hlkwc{border}\hlstd{=}\hlnum{2}\hlstd{)}
+\end{alltt}
+\end{kframe}\begin{figure}[h!]
+
+
+{\centering \includegraphics[width=\maxwidth]{figure/plotMCSSDendrogram} 
+
+}
+
+\caption[Cluster dendrogram of 50 sample compounds with given coloured border to mark a specific cluster]{Cluster dendrogram of 50 sample compounds with given coloured border to mark a specific cluster.\label{fig:plotMCSSDendrogram}}
+\end{figure}
+
+
+\end{knitrout}
 
 \newpage
 \subsubsection{Clustering with displayed Scores}
@@ -407,16 +621,27 @@ Instead of the MCSS or the cluster numbers we can plot the score and the color g
 Therefor, the function \Rfunction{plotCluster} is used. The function expects i. a. the list of the molecules
 and the score which are listed in the properties of molecules.
 
-<<plotScoredDendrogramPseudo, fig=FALSE, eps=FALSE, warning=FALSE, message=FALSE, eval=FALSE>>=
-plotCluster(scoredMols, score="Score", h=0.2, scoreprop="newscore")
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{plotCluster}\hlstd{(scoredMols,} \hlkwc{score}\hlstd{=}\hlstr{"Score"}\hlstd{,} \hlkwc{h}\hlstd{=}\hlnum{0.2}\hlstd{,} \hlkwc{scoreprop}\hlstd{=}\hlstr{"newscore"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
 
 The color indicates the level of a score of the compounds where a light red color indicates a high and a black
 color a low score. Each compound contains a score which is plotted at the bottom of the figure as a red-black gradient. The height of the dendrogram is given as Tanimoto distance which is explained in section 3.3.1.
 
-<<plotScoredDendrogram, fig.width=5, fig.height=5, fig.align='center', fig.pos='h!', echo=FALSE, eps=FALSE, warning=FALSE, message=FALSE>>=
-plotCluster(scoredMols, score="Score", h=0.2, scoreprop="newscore")
-@
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+
+{\centering \includegraphics[width=\maxwidth]{figure/plotScoredDendrogram} 
+
+}
+
+
+
+\end{knitrout}
 
 \newpage
 \section{Summary}
