@@ -1,44 +1,51 @@
-frag.loadFragmenter <- function(frag.path)
-{  
-  .jaddClassPath(frag.path);
-  fobj <- new(J("de/ipbhalle/metfrag/fragmenter/Fragmenter"), F, T, F);
-  
-  return(fobj);
+.packageName <- "metfRag"
+
+require(rJava, quietly=TRUE)
+require(rcdk, quietly=TRUE)
+
+.onLoad<-function(libname, pkgname) {
+	jar.metfrag <- paste(libname, pkgname, "java", "MetFragR-1.0-SNAPSHOT-jar-with-dependencies.jar", sep=.Platform$file.sep)	
+	.jinit(classpath=c(jar.metfrag))
 }
 
-frag.smiles <- function(smiles)
+frag.generateFragments <- function(molecule, treeDepth = 2)
 {
-  m <- parse.smiles(smiles);
-  m <- m[[1]];
-
-  J("org/openscience/cdk/tools/manipulator/AtomContainerManipulator")$percieveAtomTypesAndConfigureAtoms(m);
-  convert.implicit.to.explicit(m);
-
-  return(m);
-}
-
-frag.generateFragments <- function(path, smiles)
-{
-  if (missing(path) == TRUE)
+  if (missing(molecule) == TRUE)
   {
-    #stop("A path to MetFrag binaries have to be given.");
-    path <- "D:/Documents/MetFrag/lib/";
+    stop("ERROR: Molecule is missing.");
   }
-  
-  if (missing(smiles) == TRUE)
-  {
-    #stop("A SMILES string for a compound have to be given.");
-    smiles <- "CN(C)CC(C1=C=C(C=C1)OC)C2(CCCCC2)O";
-  }  
-  
-  fobj <- frag.loadFragmenter(path);
-  smiles <- frag.smiles(smiles);
-  
-  v <- new(J("java/util/Vector"));
-  fobj$setPeakList(v);
-  
-  frags <- fobj$generateFragmentsInMemory(smiles, F, as.integer(3));
+
+  if(class(molecule) == "character") container=parse.smiles(molecule)
+  else container=molecule
+
+  obj = .jnew("de/ipbhalle/metfrag/r/MetfRag")
+  frags<- .jcall(obj, '[Lorg/openscience/cdk/interfaces/IAtomContainer;',
+               'generateAllFragments', 
+               container, as.integer(treeDepth))
+
   frags <- as.list(frags);
-  
+  return(frags);
+}
+
+frag.generateMatchingFragments <- function(molecule, mzs, neutralMonoisotopicMass, mzabs = 0.01, mzppm = 10.0, posCharge = T, ionMode = 1, treeDepth = 2)
+{
+  if (missing(molecule) == TRUE)
+  {
+    stop("ERROR: Molecule is missing.");
+  }
+  if (missing(mzs) == TRUE)
+  {
+    stop("ERROR: MZ values are missing.");
+  }
+
+  if(class(molecule) == "character") container=parse.smiles(molecule) 
+  else container=molecule
+
+  obj = .jnew("de/ipbhalle/metfrag/r/MetfRag")
+  frags<- .jcall(obj, '[Lorg/openscience/cdk/interfaces/IAtomContainer;',
+               'generateMatchingFragments',         
+               container, .jarray(mzs,"[D"), neutralMonoisotopicMass, mzabs, mzppm, posCharge, as.integer(ionMode), as.integer(treeDepth));
+
+  frags <- as.list(frags);
   return(frags);
 }

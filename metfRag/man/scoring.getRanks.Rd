@@ -65,7 +65,7 @@ ints <-c(467.616,370.662,6078.145,10000.0,141.192,176.358,10000.000,318.003)
 mols.pc <- score.molecules.from.container(mols.pc, mzs, ints, 272.06847)
 
 #rank given molecule
-params <- list('Score', list('Score', function(x) x * 5), 'PeakScore')
+params <- list('Score', list('Score', function(x) x * 5), 'de.ipbhalle.metfrag.score.PeakScore')
 condition <- list(IUPAC_INCHIKEY="YOGIRYKSHRZUBS")
 scoring.getRanks(mols.pc, params, condition, list(sep="-", pos=1))
 }
