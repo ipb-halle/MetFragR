@@ -19,17 +19,17 @@ Installation
 - checkout the MetFragR git repository
 - build the package (on command line): <br>
 ```bash
-R CMD check metfRag
-R CMD build metfRag
+# R CMD check metfRag
+# R CMD build metfRag
 ```
 - install the package (in R): <br>
 ```R
-install.packages("metfRag",repos=NULL,type="source")
-library(metfRag)
+> install.packages("metfRag",repos=NULL,type="source")
+> library(metfRag)
 ```
 
 ##### Installing the package directly from github
 ```R
-library(devtools)
-install_github("c-ruttkies/MetFragR/metfRag")
+> library(devtools)
+> install_github("c-ruttkies/MetFragR/metfRag")
 ```
