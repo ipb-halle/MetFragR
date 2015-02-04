@@ -18,7 +18,7 @@ R:
 ```
 
 ##### Installing the package locally
-- checkout the MetFragR git repository <br>
+checkout the MetFragR git repository <br>
 command line:
 ```bash
 R CMD check metfRag
