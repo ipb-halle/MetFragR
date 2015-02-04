@@ -33,6 +33,6 @@ R:
 ##### Installing the package directly from github
 R:
 ```R
-library(devtools) <br>
+library(devtools)
 install_github("c-ruttkies/MetFragR/metfRag")
 ```
