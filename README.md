@@ -9,8 +9,7 @@ Installation
 ##### Requirements
 
 - packages built was successfully tested with R version 3.0.1 and rcdk_3.2.8.3 <br>
-- first install KEGGREST dependency from Bioconductor: <br>
-R:
+- first install KEGGREST dependency from Bioconductor (in R): <br>
 ```R
 > source("http://bioconductor.org/biocLite.R")
 > biocLite("KEGGREST")
@@ -18,21 +17,18 @@ R:
 
 ##### Installing the package locally
 - checkout the MetFragR git repository
-- build the package: <br>
-command line:
+- build the package (on command line): <br>
 ```bash
 R CMD check metfRag
 R CMD build metfRag
 ```
-- install the package: <br>
-R:
+- install the package (in R): <br>
 ```R
-> install.packages("metfRag",repos=NULL,type="source")
-> library(metfRag)
+install.packages("metfRag",repos=NULL,type="source")
+library(metfRag)
 ```
 
 ##### Installing the package directly from github
-R:
 ```R
 library(devtools)
 install_github("c-ruttkies/MetFragR/metfRag")
