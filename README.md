@@ -18,12 +18,13 @@ R:
 
 ##### Installing the package locally
 - checkout the MetFragR git repository
-- build the package
+- build the package: <br>
 command line:
 ```bash
 R CMD check metfRag
 R CMD build metfRag
 ```
+- install the package: <br>
 R:
 ```R
 > install.packages("metfRag",repos=NULL,type="source")
