@@ -33,3 +33,10 @@ Installation
 > library(devtools)
 > install_github("c-ruttkies/MetFragR/metfRag")
 ```
+
+If you get an error like "ERROR: loading failed for 'i386'" on windows
+due to rJava issues, disable multiarch builds:
+```R
+install_github("c-ruttkies/MetFragR/metfRag", args="--no-multiarch")
+```
+
