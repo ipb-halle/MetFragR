@@ -289,14 +289,14 @@ The first parameters are the sorting properties which used in the anonymous func
 @
 
 \subsection{Get fragments of a compound}
-To get fragments of a compound a SMILES string and the path to MetFrag binaries 
-are required. Hence, the compound is fragmented by using the MetFrag fragmenter which use
-the most common substructure. The SMILES is available from the compound properties \cite{Wolf2010}.
+To get fragments of a compound a rcdk AtomContainer object is needed that can be easily obtained from 
+its SMILES string. Hence, the compound is fragmented by using the MetFrag fragmenter which use the most 
+common substructure. The SMILES is available from the compound properties \cite{Wolf2010}.
 The fragments can be visualised by calling \Rfunction{view.molecule.2d}.
 <<fragmentSmiles,eval=FALSE>>=
-  path <- "D:/Documents/MetFrag/lib/"
   smiles <- "CN(C)CC(C1=C=C(C=C1)OC)C2(CCCCC2)O"
-  frag.generateFragments(path, smiles)
+  mol<-parse.smiles(smiles)[[1]]
+  frag.generateFragments(mol)
 @
 
 \newpage
