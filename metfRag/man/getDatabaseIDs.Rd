@@ -3,7 +3,7 @@
 \alias{getDatabaseIDs}
 \title{MetFrag result tools}
 \usage{
-getDatabaseIDs(mols, idprop = "DatabaseID")
+getDatabaseIDs(mols, idprop = "Identifier")
 }
 \arguments{
 \item{mols}{A list of rCDK \code{molecules} with MetFrag or MetFusion results}

@@ -124,26 +124,22 @@ scoring.getRanks <- function(mols, sorting, condition, split=NULL)
     
   if (missing(sorting) == TRUE)
   {
-    print(comm.lib.showNumberOptions(mols));
-    warning("Please choose a sorting method from above. You could use the
-         function: comm.lib.showNumberOptions(set)");
-    return(FALSE);
+    	warning("Choose valid sorting parameter.")
+	return(FALSE);
   }
   
   if (missing(condition) == TRUE)
   {
-    print(comm.lib.showLinkOptions(mols));
-    warning("Please choose a link from above. You could use the
-         function: comm.lib.showLinkOptions(set)");
-    return(FALSE);
+	 warning("Choose valid condition parameter.")
+    	return(FALSE);
   }
   
   orderedContainer  <- scoring.orderContainer(sorting, mols);
-  
+  if(is.null(dim(orderedContainer))) {orderedContainer=data.frame(V1=orderedContainer)}
   mol.pos <- sapply(mols, common.lib.findMolecule, 
                     names(condition), condition[[1]], split);
   
-  mol.pos           <- which(mol.pos==TRUE);
+  mol.pos           <- which(mol.pos);
   pos.rows          <- match(mol.pos, as.numeric(rownames(orderedContainer)));
   
   rank <- mapply(scoring.calcMolParameter, pos.rows, mol.pos, 

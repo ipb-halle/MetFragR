@@ -3,7 +3,7 @@
 \title{Chemical Clustering of MetFrag and MetFusion results SDF files}
 \usage{
   hclust.mols(mols = NULL, smiles = NULL, filename = NULL,
-    scoreprop = "Score", idprop = "DatabaseID")
+    scoreprop = "Score", idprop = "Identifier")
 }
 \arguments{
   \item{mols}{The a list of rCDK \code{mols}.}

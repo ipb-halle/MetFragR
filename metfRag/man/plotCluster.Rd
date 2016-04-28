@@ -3,7 +3,7 @@
 \alias{plotCluster}
 \title{Chemical Clustering}
 \usage{
-plotCluster(mols, scoreprop = "Score", idprop = "DatabaseID", h = NULL,
+plotCluster(mols, scoreprop = "Score", idprop = "Identifier", h = NULL,
   k = NULL, ...)
 }
 \arguments{
@@ -29,7 +29,7 @@ library(rcdk)
                    'C1CCC1CC(CN(C)(C))CC(=O)CC')
        mols <- parse.smiles(smiles)
        dummy <- mapply(set.property, mols, "Score", c(1,2,3,4,5))
-       dummy <- mapply(set.property, mols, "DatabaseID", c("C1", "C2", "C3", "C4", "C5"))
+       dummy <- mapply(set.property, mols, "Identifier", c("C1", "C2", "C3", "C4", "C5"))
        plotCluster(mols, h=0.2)
 }
 

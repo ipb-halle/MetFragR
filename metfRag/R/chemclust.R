@@ -31,20 +31,20 @@
 #'                    'C1CCC1CC(CN(C)(C))CC(=O)CC')
 #'        mols <- parse.smiles(smiles)
 #'        dummy <- mapply(set.property, mols, "Score", c(1,2,3,4,5))
-#'        dummy <- mapply(set.property, mols, "DatabaseID", c("C1", "C2", "C3", "C4", "C5"))
+#'        dummy <- mapply(set.property, mols, "Identifier", c("C1", "C2", "C3", "C4", "C5"))
 #'        plotMetClust(mols)
 #' 
 #' @export
 
 plotMetClust <- function(mols=NULL, filename=NULL, type=c("auto", "sdf", "smi"), 
-                         hclust=NULL, scoreprop="Score", idprop="DatabaseID")
+                         hclust=NULL, scoreprop="Score", idprop="Identifier")
 {
   warning("NYI")
 }
 
 #' @export
 hclust.mols <- function(mols=NULL, smiles=NULL, filename=NULL,
-                        scoreprop="Score", idprop="DatabaseID") 
+                        scoreprop="Score", idprop="Identifier") 
 {
 
   if (!missing(mols)) {
@@ -79,8 +79,8 @@ hclust.mols <- function(mols=NULL, smiles=NULL, filename=NULL,
 }  
 
 # h1 <- hclust.mols(filename="/vol/R/rguha/cdkr/data/BL.sdf")
-# h2 <- hclust.mols(mols=NULL, filename=NULL, scoreprop="Score", idprop="DatabaseID")
-# h3 <- hclust.mols(mols=NULL, filename=NULL, scoreprop="Score", idprop="DatabaseID")
+# h2 <- hclust.mols(mols=NULL, filename=NULL, scoreprop="Score", idprop="Identifier")
+# h3 <- hclust.mols(mols=NULL, filename=NULL, scoreprop="Score", idprop="Identifier")
 
 
 #' Chemical Clustering
@@ -103,12 +103,12 @@ hclust.mols <- function(mols=NULL, smiles=NULL, filename=NULL,
 #'                    'C1CCC1CC(CN(C)(C))CC(=O)CC')
 #'        mols <- parse.smiles(smiles)
 #'        dummy <- mapply(set.property, mols, "Score", c(1,2,3,4,5))
-#'        dummy <- mapply(set.property, mols, "DatabaseID", c("C1", "C2", "C3", "C4", "C5"))
+#'        dummy <- mapply(set.property, mols, "Identifier", c("C1", "C2", "C3", "C4", "C5"))
 #'        plotCluster(mols, h=0.2)
 #' 
 #' @export
 
-plotCluster <- function(mols, scoreprop="Score", idprop="DatabaseID", h=NULL, k=NULL, ...) {
+plotCluster <- function(mols, scoreprop="Score", idprop="Identifier", h=NULL, k=NULL, ...) {
   
   clusters  <- list()
   

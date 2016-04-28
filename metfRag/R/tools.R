@@ -19,7 +19,7 @@ getScores <- function(mols, scoreprop="Score"){
 #' @param mols A list of rCDK \code{molecules} with MetFrag or MetFusion results
 #' @export
 getPeaksExplained <- function(mols){
-  return (sapply(mols, function(x) as.numeric(get.property(x, "NoPeaksExplained"))))
+  return (sapply(mols, function(x) as.numeric(get.property(x, "NoExplPeaks"))))
 }
 
 #' MetFrag result tools
@@ -30,7 +30,7 @@ getPeaksExplained <- function(mols){
 #' @param mols A list of rCDK \code{molecules} with MetFrag or MetFusion results
 #' @param idprop The name of the property of the molecules where the database ID is kept
 #' @export
-getDatabaseIDs <- function(mols, idprop="DatabaseID") {
+getDatabaseIDs <- function(mols, idprop="Identifier") {
   return (sapply(1:length(mols), function(i) {
     id <- get.property(mols[[i]], idprop)
     if (is.na(id) || id == 'NA')

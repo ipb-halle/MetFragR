@@ -4,7 +4,7 @@ require(rJava, quietly=TRUE)
 require(rcdk, quietly=TRUE)
 
 .onLoad<-function(libname, pkgname) {
-	jar.metfrag <- paste(libname, pkgname, "java", "MetFragR-1.0-SNAPSHOT-jar-with-dependencies.jar", sep=.Platform$file.sep)	
+	jar.metfrag <- paste(libname, pkgname, "java", "MetFragR-2.3-jar-with-dependencies.jar", sep=.Platform$file.sep)	
 	.jinit(classpath=c(jar.metfrag))
 }
 
@@ -27,7 +27,7 @@ frag.generateFragments <- function(molecule, treeDepth = 2)
   return(frags);
 }
 
-frag.generateMatchingFragments <- function(molecule, mzs, neutralMonoisotopicMass, mzabs = 0.01, mzppm = 10.0, posCharge = T, ionMode = 1, treeDepth = 2)
+frag.generateMatchingFragments <- function(molecule, mzs, neutralMonoisotopicMass, mzabs = 0.01, mzppm = 10.0, posCharge = TRUE, ionMode = 1, treeDepth = 2)
 {
   if (missing(molecule) == TRUE)
   {
@@ -44,7 +44,7 @@ frag.generateMatchingFragments <- function(molecule, mzs, neutralMonoisotopicMas
   obj = .jnew("de/ipbhalle/metfrag/r/MetfRag")
   frags<- .jcall(obj, '[Lorg/openscience/cdk/interfaces/IAtomContainer;',
                'generateMatchingFragments',         
-               container, .jarray(mzs,"[D"), neutralMonoisotopicMass, mzabs, mzppm, posCharge, as.integer(ionMode), as.integer(treeDepth));
+               container, .jarray(mzs,"[D"), neutralMonoisotopicMass, as.double(mzabs), as.double(mzppm), as.logical(posCharge), as.integer(ionMode), as.integer(treeDepth));
 
   frags <- as.list(frags);
   return(frags);

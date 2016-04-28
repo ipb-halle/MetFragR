@@ -4,7 +4,7 @@
 \title{Chemical Clustering of MetFrag and MetFusion results SDF files}
 \usage{
 plotMetClust(mols = NULL, filename = NULL, type = c("auto", "sdf", "smi"),
-  hclust = NULL, scoreprop = "Score", idprop = "DatabaseID")
+  hclust = NULL, scoreprop = "Score", idprop = "Identifier")
 }
 \arguments{
 \item{hclust}{An object of class hclust which describes the tree produced by a prior clustering process.}
@@ -31,7 +31,7 @@ library(rcdk)
                    'C1CCC1CC(CN(C)(C))CC(=O)CC')
        mols <- parse.smiles(smiles)
        dummy <- mapply(set.property, mols, "Score", c(1,2,3,4,5))
-       dummy <- mapply(set.property, mols, "DatabaseID", c("C1", "C2", "C3", "C4", "C5"))
+       dummy <- mapply(set.property, mols, "Identifier", c("C1", "C2", "C3", "C4", "C5"))
        plotMetClust(mols)
 }
 

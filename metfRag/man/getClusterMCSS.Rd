@@ -20,7 +20,6 @@ getClusterMCSS(hcluster, mols, h = NULL, k = NULL, which = NULL)
 Calculate the Maximum Common Substructure
 }
 \examples{
-library(rcdk)
        smiles <- c('CCC', 'CCN', 'CCN(C)(C)',
                    'c1ccccc1Cc1ccccc1',
                    'C1CCC1CC(CN(C)(C))CC(=O)CC')

@@ -98,7 +98,7 @@ lib.CommonSet <- function(set)
   set.result <- c();
   
   for (i in 1:length(set))
-  { set.result <- c(set.result, names(set[[i]])); }
+  { set.result <<- c(set.result, names(set[[i]])); }
 
   set.result <- intersect(set.result, set.result);
 
