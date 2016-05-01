@@ -3,8 +3,14 @@ MetFragR
 
 R package for MetFrag
 
-Installation
-------------
+Installation with devtools:
+---------------------------
+
+\> library(devtools)<br>
+\> install_github("c-ruttkies/MetFragR/metfRag")
+
+Installation from local source
+------------------------------
 
 ##### Installing the package locally
 - checkout the MetFragR git repository
