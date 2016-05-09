@@ -3,6 +3,8 @@ MetFragR
 
 R package for MetFrag
 
+Details on http://c-ruttkies.github.io/MetFrag/projects/metfragr/
+
 Installation
 ------------
 
