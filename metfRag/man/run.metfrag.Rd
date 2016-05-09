@@ -57,6 +57,9 @@ settingsObject[["PeakList"]]<-matrix(c(
 254.97312, 999), ncol=2, byrow=TRUE)
 settingsObject[["NeutralPrecursorMolecularFormula"]]<-"C7H5Cl2FN2O3"
 settingsObject[["PrecursorCompoundIDs"]]<-c("50465", "57010914", "56974741", "88419651", "23354334")
+#define candidate filters
+settingsObject[["MetFragPreProcessingCandidateFilter"]]<-c("UnconnectedCompoundFilter","IsotopeFilter")
+settingsObject[["MetFragPostProcessingCandidateFilter"]]<-c("InChIKeyFilter")
 #run MetFrag
 scored.candidates<-run.metfrag(settingsObject)
 #scored.candidates is a data.frame with scores and candidate properties

@@ -47,28 +47,31 @@ run.metfrag<-function(settingsObject) {
 	  else if(name == "MaximumTreeDepth") {return("integer")}
 	  else if(name == "PrecursorIonMode") {return("integer")}
 	  else if(name == "IonizedPrecursorMass") {return("double")}
+	  else if(name == "NumberThreads") {return("byte")}
 	  else if(name == "ExperimentalRetentionTimeValue") {return("double")}
 	  else if(name == "MinimumAbsolutePeakIntensity") {return("double")}
-	  else if(name == "SmartsSubstructureExclusionScoreSmartsList") {return("string[]")}
-	  else if(name == "SmartsSubstructureInclusionScoreSmartsList") {return("string[]")}
-	  else if(name == "ScoreSmartsInclusionList") {return("string[]")}
-	  else if(name == "ScoreSmartsExclusionList") {return("string[]")}
-	  else if(name == "FilterSmartsInclusionList") {return("string[]")}
-	  else if(name == "FilterSmartsExclusionList") {return("string[]")}
-	  else if(name == "FilterSuspectLists") {return("string[]")}
-	  else if(name == "ScoreSuspectLists") {return("string[]")}
-	  else if(name == "FilterExcludedElements") {return("string[]")}
-	  else if(name == "FilterIncludedElements") {return("string[]")}
-	  else if(name == "CombinedReferenceScoreValues") {return("string[]")}
-	  else if(name == "MetFragPreProcessingCandidateFilter") {return("string[]")}
-	  else if(name == "MetFragPostProcessingCandidateFilter") {return("string[]")}
-	  else if(name == "MetFragScoreTypes") {return("string[]")}
-	  else if(name == "MetFragCandidateWriter") {return("string[]")}
+	  else if(name == "SmartsSubstructureExclusionScoreSmartsList") {return("array")}
+	  else if(name == "SmartsSubstructureInclusionScoreSmartsList") {return("array")}
+	  else if(name == "ScoreSmartsInclusionList") {return("array")}
+	  else if(name == "ScoreSmartsExclusionList") {return("array")}
+	  else if(name == "FilterSmartsInclusionList") {return("array")}
+	  else if(name == "FilterSmartsExclusionList") {return("array")}
+	  else if(name == "FilterSuspectLists") {return("array")}
+	  else if(name == "ScoreSuspectLists") {return("array")}
+	  else if(name == "FilterExcludedElements") {return("array")}
+	  else if(name == "FilterIncludedElements") {return("array")}
+	  else if(name == "CombinedReferenceScoreValues") {return("array")}
+	  else if(name == "MetFragScoreWeights") {return("array_double")}
+	  else if(name == "MetFragPreProcessingCandidateFilter") {return("array")}
+	  else if(name == "MetFragPostProcessingCandidateFilter") {return("array")}
+	  else if(name == "PrecursorCompoundIDs") {return("array")}
+	  else if(name == "MetFragScoreTypes") {return("array_double")}
+	  else if(name == "MetFragCandidateWriter") {return("array")}
 	  else if(vector) {
-	    if(class(value) == "numeric" && value == round(value)) {return("integer[]")}
-	    else if(class(value) == "numeric" && value != round(value)) {return("double[]")}
-	    else if(class(value) == "character") {return("string[]")}
-	    else if(class(value) == "logical") {return("boolean[]")}
+	    if(class(value) == "numeric" && value == round(value)) {return("array")}
+	    else if(class(value) == "numeric" && value != round(value)) {return("array_double")}
+	    else if(class(value) == "character") {return("array")}
+	    else if(class(value) == "logical") {return("array")}
 	    else {return("unknown")}
 	  }
 	  else if(!vector) {
@@ -94,7 +97,7 @@ run.metfrag<-function(settingsObject) {
 	    .jcall(javaSettings, "V", 'set', "MetFragPeakListReader", .jnew("java.lang.String", as.character("de.ipbhalle.metfraglib.peaklistreader.FilteredStringTandemMassPeakListReader")))
 	  }
 	  #check further settings
-	  else if(length(settingsObject[[name]]) == 1) {
+	  else {
 	    #in case it a single value
 	    if(getDatatype(name, settingsObject[[name]]) == "integer") {
 	      .jcall(javaSettings, "V", 'set', name, .jnew("java.lang.Integer", as.integer(settingsObject[[name]])))
@@ -105,21 +108,18 @@ run.metfrag<-function(settingsObject) {
 	    else if(getDatatype(name, settingsObject[[name]]) == "string") {
 	      .jcall(javaSettings, "V", 'set', name, .jnew("java.lang.String", as.character(settingsObject[[name]])))
 	    }
-	    else if(getDatatype(name, settingsObject[[name]]) == "logical") {
+	    else if(getDatatype(name, settingsObject[[name]]) == "boolean") {
 	      .jcall(javaSettings, "V", 'set', name, .jnew("java.lang.Boolean", as.logical(settingsObject[[name]])))
 	    }
+	    else if(getDatatype(name, settingsObject[[name]]) == "byte") {
+	      .jcall(javaSettings, "V", 'set', name, .jnew("java.lang.Byte", .jbyte(settingsObject[[name]])))
+	    }
 	    #vectors
-	    else if(getDatatype(name, settingsObject[[name]]) == "string[]") {
-	      .jcall(javaSettings, "V", 'set', name, .jnew("[java.lang.String", as.character(settingsObject[[name]])))
+	    else if(getDatatype(name, settingsObject[[name]]) == "array") {
+	      .jcall(javaSettings, "V", 'set', name, .jarray(settingsObject[[name]]))
 	    }
-	    else if(getDatatype(name, settingsObject[[name]]) == "double[]") {
-	      .jcall(javaSettings, "V", 'set', name, .jnew("[java.lang.Double", as.double(settingsObject[[name]])))
-	    }
-	    else if(getDatatype(name, settingsObject[[name]]) == "integer[]") {
-	      .jcall(javaSettings, "V", 'set', name, .jnew("[java.lang.Integer", as.integer(settingsObject[[name]])))
-	    }
-	    else if(getDatatype(name, settingsObject[[name]]) == "logical[]") {
-	      .jcall(javaSettings, "V", 'set', name, .jnew("[java.lang.Boolean", as.logical(settingsObject[[name]])))
+	    else if(getDatatype(name, settingsObject[[name]]) == "array_double") {
+	      .jcall(javaSettings, "V", 'set', name, .jarray(settingsObject[[name]], "[java.lang.Double"))
 	    }
 	    else {
 	      print(paste("Unknown type of parameter", name, "(", class(settingsObject[[name]]), ")"))
@@ -133,8 +133,12 @@ run.metfrag<-function(settingsObject) {
 	obj=.jnew("de/ipbhalle/metfrag/r/MetfRag")
 	candidateList=.jcall(obj, "Lde/ipbhalle/metfraglib/list/CandidateList;", "runMetFrag", javaSettings)
 	candidateList=.jcast(candidateList, "de/ipbhalle/metfraglib/list/ScoredCandidateList")
-	numberPeaksUsed<-.jcall(candidateList, "I", "getNumberPeaksUsed")
+	
 	numberCandidates<-.jcall(candidateList, "I", "getNumberElements")
+	
+	if(numberCandidates == 0) return(data.frame())
+	
+	numberPeaksUsed<-.jcall(candidateList, "I", "getNumberPeaksUsed")
 	propertyNames<-c()
 	datatypes<-list()
 	
