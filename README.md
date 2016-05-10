@@ -26,6 +26,12 @@ library(metfRag)
 library(devtools)
 install_github("c-ruttkies/MetFragR/metfRag")
 ```
+- if you get an error like "ERROR: loading failed for 'i386'" on windows
+due to rJava issues, disable multiarch builds:
+```R
+install_github("c-ruttkies/MetFragR/metfRag", args="--no-multiarch")
+```
+
 
 ##### Example (Run MetFrag)
 ```R
@@ -70,11 +76,5 @@ settingsObject[["MetFragPostProcessingCandidateFilter"]]<-c("InChIKeyFilter")
 #run MetFrag
 scored.candidates<-run.metfrag(settingsObject)
 #scored.candidates is a data.frame with scores and candidate properties
-```
-
-If you get an error like "ERROR: loading failed for 'i386'" on windows
-due to rJava issues, disable multiarch builds:
-```R
-install_github("c-ruttkies/MetFragR/metfRag", args="--no-multiarch")
 ```
 
