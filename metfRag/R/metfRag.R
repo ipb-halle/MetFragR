@@ -169,7 +169,7 @@ run.metfrag<-function(settingsObject) {
 	sapply(1:length(propertyNames), function(propertyIndex) {
 	  datatype<-datatypes[[propertyNames[propertyIndex]]]
 	  if(datatype == "java.lang.Double" || datatype == "java.lang.Byte" || datatype == "java.lang.Integer" || datatype == "java.lang.Float") {
-	    candidateProperties[[propertyNames[propertyIndex]]]<<-as.numeric(candidateProperties[[propertyNames[propertyIndex]]])
+	    suppressWarnings(candidateProperties[[propertyNames[propertyIndex]]]<<-as.numeric(candidateProperties[[propertyNames[propertyIndex]]]))
 	  }
 	})
 
