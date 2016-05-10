@@ -130,10 +130,20 @@ run.metfrag<-function(settingsObject) {
 	  }
 	})
 
+	temp_dir=tempdir()
+	J("java.lang.System")$setProperty( "java.io.tmpdir", temp_dir )
+
 	obj=.jnew("de/ipbhalle/metfrag/r/MetfRag")
 	candidateList=.jcall(obj, "Lde/ipbhalle/metfraglib/list/CandidateList;", "runMetFrag", javaSettings)
 	candidateList=.jcast(candidateList, "de/ipbhalle/metfraglib/list/ScoredCandidateList")
 	
+	#remove axis temp dirs in case they were generated
+	axis_files<-dir(temp_dir, full.names=T)[grep("^axis2", dir(temp_dir))]
+	axis_dirs<-axis_files[which(file.info(axis_files)[,"isdir"])]
+	files_to_remove<-unlist(lapply(1:length(axis_dirs), function(x) dir(axis_dirs[x], full.names=T)))
+	files_to_remove<-files_to_remove[grep("jar$", files_to_remove)]
+	unlink(files_to_remove)
+
 	numberCandidates<-.jcall(candidateList, "I", "getNumberElements")
 	
 	if(numberCandidates == 0) return(data.frame())
