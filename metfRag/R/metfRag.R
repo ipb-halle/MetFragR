@@ -11,6 +11,50 @@ require(rJava, quietly=TRUE)
 	.jinit(classpath=c(jar.metfrag))
 }
 
+#' Create a settings object used by run.metfrag function
+#' 
+#' Returns a list with defined settings.
+#' 
+#' @author Christoph Ruttkies (\email{cruttkie@ipb-halle.de})
+#' @export
+create.settings.sample<-function() {
+  settingsObject<-list()
+  settingsObject[["DatabaseSearchRelativeMassDeviation"]]<-5.0
+  settingsObject[["FragmentPeakMatchAbsoluteMassDeviation"]]<-0.001
+  settingsObject[["FragmentPeakMatchRelativeMassDeviation"]]<-5.0
+  settingsObject[["MetFragDatabaseType"]]<-"PubChem"
+  settingsObject[["NeutralPrecursorMass"]]<-253.966126
+  settingsObject[["NeutralPrecursorMolecularFormula"]]<-"C7H5Cl2FN2O3"
+  settingsObject[["PrecursorCompoundIDs"]]<-c("50465", "57010914", "56974741", "88419651", "23354334")
+  settingsObject[["MetFragPreProcessingCandidateFilter"]]<-c("UnconnectedCompoundFilter","IsotopeFilter")
+  settingsObject[["MetFragPostProcessingCandidateFilter"]]<-c("InChIKeyFilter")
+  settingsObject[["PeakList"]]<-matrix(c(	
+  90.97445, 681,	
+  106.94476, 274,	
+  110.02750, 110,	
+  115.98965, 95,	
+  117.98540, 384,	
+  124.93547, 613,	
+  124.99015, 146,	
+  125.99793, 207,	
+  133.95592, 777,	
+  143.98846, 478,	
+  144.99625, 352,	
+  146.00410, 999,	
+  151.94641, 962,	
+  160.96668, 387,	
+  163.00682, 782,	
+  172.99055, 17,	
+  178.95724, 678,	
+  178.97725, 391,	
+  180.97293, 999,	
+  196.96778, 720,	
+  208.96780, 999,	
+  236.96245, 999,	
+  254.97312, 999), ncol=2, byrow=TRUE)
+  return(settingsObject)
+}
+
 #' Run MetFrag by specifying all parameters given with the settings object as list
 #' 
 #' The function uses defined settings like database, fragmentation and scoring
