@@ -103,7 +103,7 @@ alpha2image <- function(img, threshold=0.5) {
 #' @aliases getMCSS
 #' @usage getMCSS(mols)
 #' @param mols The a list of rCDK \code{mols}
-#' @author Steffen Neumann (\email{sneumann@@ipb-halle.de})
+#' @author Steffen Neumann (\email{sneumann@ipb-halle.de})
 #' @examples 
 #'        library(rcdk)
 #'        smiles <- c('CCC', 'CCN', 'CCN(C)(C)',
@@ -128,3 +128,57 @@ getMCSS <- function(mols) {
   }
   return (consensus)  
 }
+
+#' Retrieve PubChem Trivial Names
+#' 
+#' Fetches trivial names for a processed PubChem candidate list retrieved by \code{run.metfrag} command.
+#' A new candidate list is returned with an additional column including the trivial names
+#' from PubChem. 
+#'
+#' @aliases add.trivialname.pubchem
+#' @usage add.trivialname.pubchem(result.list.metfrag)
+#' @param processed candidate list retrieved by \code{run.metfrag} and PubChem
+#' @author Christoph Ruttkies (\email{cruttkie@ipb-halle.de})
+#' @examples 
+#'        obj <- create.settings.sample()
+#'        result.list.metfrag <- run.metfrag(smiles)
+#'        result.list.metfrag <- add.trivialname.pubchem(result.list.metfrag)
+#' 
+#' @export
+add.trivialname.pubchem <- function(result.list.metfrag) {
+  if(!require(rjson)) {
+    print("Please install package: rjson")
+    return(result.list.metfrag)
+  }
+  ids <- as.character(result.list.metfrag[,"Identifier"])
+  names <- rep("NA", dim(result.list.metfrag)[1])
+  names(names) <- ids
+  id_string <- ""
+  packages <- ceiling(length(ids) / 200)
+  for(i in 1:length(ids)) {
+    if(id_string != "") {
+      id_string <- paste(id_string, ids[i], sep=",")
+    } else {
+      id_string <- paste(id_string, ids[i], sep="")
+    }
+    if(i %% 200 == 0 || i == length(ids)) {
+      link <- paste("http://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/", id_string, "/synonyms/JSON", sep="")
+      document <- fromJSON(paste(readLines(link), collapse=""))
+      id_string <- ""
+      sapply(document[[1]][[1]], function(element) {
+        if(!is.null(element$Synonym[1])) {names[as.character(element$CID)] <<- element$Synonym[1]}
+      })
+      cat(paste(ceiling(i / 200),"/" , packages, " ", sep=""), append=T)
+    }
+  }
+  cat("", sep="\n")
+  if("TrivialName" %in% colnames(result.list.metfrag)) {
+    named.result.list.metfrag <- result.list.metfrag
+    named.result.list.metfrag[,"TrivialName"] <- names
+  } else {
+    named.result.list.metfrag <- cbind(result.list.metfrag, names)
+    colnames(named.result.list.metfrag)[length(named.result.list.metfrag)] <- "TrivialName"
+  }
+  return(named.result.list.metfrag)
+}
+

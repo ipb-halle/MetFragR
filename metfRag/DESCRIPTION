@@ -5,7 +5,7 @@ Version: 2.0
 Date: 2015-04-27
 Author: Christoph Ruttkies <cruttkie@ipb-halle.de>, Steffen Neumann <sneumann@ipb-halle.de>, Adrian Helmchen
 Maintainer: Christoph Ruttkies <cruttkie@ipb-halle.de>
-Depends: R (>= 2.14.0), rJava, rcdk, rcdklibs (>= 1.5.8.4)
+Depends: R (>= 2.14.0), rJava, rcdk, rcdklibs (>= 1.5.8.4), rjson
 Imports: squash
 SystemRequirements: Java
 Description: Identification of small molecules using high precision mass spectrometry. Candidate molecules 

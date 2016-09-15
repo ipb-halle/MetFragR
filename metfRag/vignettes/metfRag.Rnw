@@ -99,6 +99,7 @@ is the result of MetFusion processing of the MS/MS spectrum of the CASMI 2014 ch
 <<loadStructures,warning=FALSE,message=FALSE>>=
 file <- "sdf/MetFrag_Candidates.sdf"
 sdf <- system.file(file, package = "metfRag")
+molecules <- load.molecules(sdf)
 @
 \newpage
 \subsection{Scoring structures with MetFrag}
