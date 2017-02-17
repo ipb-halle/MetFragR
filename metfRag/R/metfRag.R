@@ -84,6 +84,7 @@ run.metfrag<-function(settingsObject) {
 	  else if(name == "KeggProxyPort") {return("integer")}
 	  else if(name == "MoNAProxyPort") {return("integer")}
 	  else if(name == "MetaCycProxyPort") {return("integer")}
+	  else if(name == "PubChemProxyPort") {return("integer")}
 	  else if(name == "NeutralPrecursorMass") {return("double")}
 	  else if(name == "DatabaseSearchRelativeMassDeviation") {return("double")}
 	  else if(name == "FragmentPeakMatchAbsoluteMassDeviation") {return("double")}

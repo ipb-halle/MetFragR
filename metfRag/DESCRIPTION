@@ -1,8 +1,8 @@
 Package: metfRag
 Type: Package
 Title: Identification of metabolites using mass spectrometry data
-Version: 2.0
-Date: 2015-04-27
+Version: 2.4.2
+Date: 2017-02-17
 Author: Christoph Ruttkies <cruttkie@ipb-halle.de>, Steffen Neumann <sneumann@ipb-halle.de>, Adrian Helmchen
 Maintainer: Christoph Ruttkies <cruttkie@ipb-halle.de>
 Depends: R (>= 2.14.0), rJava, rcdk, rcdklibs (>= 1.5.8.4), rjson
@@ -13,4 +13,4 @@ Description: Identification of small molecules using high precision mass spectro
              using the fragment peak matches gives hints to the quality of the candidate spectrum assignment. Optionally 
 	     different scoring terms can be added to influence the ranking.
 License: LGPL
-Packaged: 2014-02-25 13:01:22 UTC; cruttkie
+Packaged: 2017-02-17 13:01:22 UTC; cruttkie
