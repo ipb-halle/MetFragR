@@ -34,7 +34,7 @@
 \renewcaptionname{ngerman}{\listfigurename}{Figures}
 \renewcaptionname{ngerman}{\listtablename}{Tables}
 \renewcaptionname{ngerman}{\figurename}{Figure}
-\renewcaptionname{ngerman}{\tablename}{Table}
+
 
 \newcommand{\Robject}[1]{{\texttt{#1}}}
 \newcommand{\Rfunction}[1]{{\texttt{#1}}}
