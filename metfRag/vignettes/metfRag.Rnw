@@ -30,10 +30,10 @@
 \setlength{\parindent}{0em}
 \setlength{\headheight}{13.87178pt}
 
-\renewcaptionname{ngerman}{\contentsname}{Table of Contents}
-\renewcaptionname{ngerman}{\listfigurename}{Figures}
-\renewcaptionname{ngerman}{\listtablename}{Tables}
-\renewcaptionname{ngerman}{\figurename}{Figure}
+
+
+
+
 
 
 \newcommand{\Robject}[1]{{\texttt{#1}}}
