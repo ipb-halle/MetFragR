@@ -56,8 +56,8 @@ plotMol <- function(mol=NULL, smiles=NULL, width = 200, height = 200, watermark=
   if (missing(mol)) {
     mol <- parse.smiles(smiles)[[1]]
   }
-  #  img <- view.image.2d(mol, width = 1024, height = 1024)
-  img <- view.image.2d(mol, width = width, height = height)
+  dep <- get.depictor(width = width, height = height)
+  img <- view.image.2d(mol, dep)
   plot.new()
   plot.window(xlim=c(0,1), ylim=c(0,1))
   if (!is.null(watermark)) {
