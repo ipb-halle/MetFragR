@@ -86,7 +86,7 @@ alpha2image <- function(img, threshold=0.5) {
   d[3] <- 4
   a3 <- array(dim=d)
   
-  a3[,,1:3] <- a2
+  a3[,,1:3] <- a2[,,1:3]
   a3[,,4] <- alpha
   
   img <- as.raster(a3)  
