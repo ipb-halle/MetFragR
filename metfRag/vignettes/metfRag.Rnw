@@ -314,14 +314,14 @@ Therefor, the function \Rfunction{plotCluster} is used. The function expects i. 
 and the score which are listed in the properties of molecules.
 
 <<plotScoredDendrogramPseudo, fig=FALSE, eps=FALSE, warning=FALSE, message=FALSE, eval=FALSE>>=
-plotCluster(scoredMols, score="Score", h=0.2, scoreprop="FragmenterScore")
+plotCluster(scored.molecules, scoreprop="Score", h=0.2)
 @
 
 The color indicates the level of a score of the compounds where a light red color indicates a high and a black
 color a low score. Each compound contains a score which is plotted at the bottom of the figure as a red-black gradient. The height of the dendrogram is given as Tanimoto distance which is explained in section 3.3.1.
 
 <<plotScoredDendrogram, fig.width=5, fig.height=5, fig.align='center', fig.pos='h!', echo=FALSE, eps=FALSE, warning=FALSE, message=FALSE>>=
-plotCluster(scored.molecules.subset, score="Score", h=0.2, scoreprop="FragmenterScore")
+plotCluster(scored.molecules.subset, scoreprop="Score", h=0.2)
 @
 
 \newpage
