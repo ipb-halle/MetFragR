@@ -1,0 +1,2 @@
+language: bash
+script: R CMD check metfRag && R CMD build metfRag
