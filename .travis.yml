@@ -1,6 +1,3 @@
-language: bash
-script: R CMD check metfRag && R CMD build metfRag
-addons:
-  apt:
-    packages:
-      - r-base
+language: r
+cache: packages
+r: rJava rcdk rcdklibs rjson squash
