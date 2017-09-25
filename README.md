@@ -1,3 +1,6 @@
+[![Build
+Status](https://travis-ci.org/c-ruttkies/MetFragR.svg?branch=master)](https://travis-ci.org/c-ruttkies/MetFragR)
+
 MetFragR
 ========
 
