@@ -1,3 +1,4 @@
 language: r
 cache: packages
 before_install: cd metfRag
+warnings_are_errors: false
